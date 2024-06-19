@@ -6,7 +6,7 @@ class Task(BaseModel):
     identifier: int
     period: int
     activation_date: int
-    wcet: int
+    wcet: int # worst-case execution time
     deadline: int
 
     def __init__(

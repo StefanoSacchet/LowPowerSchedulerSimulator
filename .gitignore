@@ -10,3 +10,9 @@ __pycache__/
 # Environments
 .env
 .venv
+
+# results
+results/
+
+# .vscode
+.vscode/

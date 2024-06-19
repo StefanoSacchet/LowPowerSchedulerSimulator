@@ -1,9 +1,12 @@
-import sys
+import os
 from simso.core import Model
 from simso.configuration import Configuration
 from typing import List
 
 from src.types.Task import Task
+from src.plots.plot_task_set import plot_task_set
+from src.plots.plot_results import plot_results
+from src.config import FileNames
 
 
 # This function is used to generate tasks for the simulation
@@ -36,36 +39,55 @@ def generate_tasks() -> List[Task]:
     ]
 
 
-def main(argv):
-    if len(argv) == 2:
-        # configuration load from a file
-        configuration = Configuration(argv[1])
-    else:
-        # manual configuration
-        configuration = Configuration()
+def save_results(model: Model) -> None:
+    # create a directory to save the results
+    os.path.exists(FileNames.RESULTS_DIR.value) or os.makedirs(
+        FileNames.RESULTS_DIR.value
+    )
 
-        configuration.duration = 420 * configuration.cycles_per_ms
+    # save logs
+    with open(
+        os.path.join(FileNames.RESULTS_DIR.value, FileNames.LOGS_NAME.value), "w"
+    ) as f:
+        for log in model.logs:
+            f.write(str(log) + "\n")
 
-        # get generates tasks
-        task_list: List[Task] = generate_tasks()
+    # save computation times
+    with open(
+        os.path.join(FileNames.RESULTS_DIR.value, FileNames.COMP_TIMES_NAME.value), "w"
+    ) as f:
+        for task in model.results.tasks:
+            f.write(task.name + ":\n")
+            for job in task.jobs:
+                f.write("%s %.3f ms\n" % (job.name, job.computation_time))
 
-        # add tasks to the configuration
-        for task in task_list:
-            configuration.add_task(
-                name=task.name,
-                identifier=task.identifier,
-                period=task.period,
-                activation_date=task.activation_date,
-                wcet=task.wcet,
-                deadline=task.deadline,
-            )
 
-        # add a processor
-        configuration.add_processor(name="CPU 1", identifier=1)
+def main():
+    # manual configuration
+    configuration = Configuration()
 
-        # add a scheduler
-        configuration.scheduler_info.filename = "./src/schedulers/EDF_mono.py"
-        # configuration.scheduler_info.clas = "simso.schedulers.RM"
+    configuration.duration = 420 * configuration.cycles_per_ms
+
+    # get generates tasks
+    task_list: List[Task] = generate_tasks()
+
+    # add tasks to the configuration
+    for task in task_list:
+        configuration.add_task(
+            name=task.name,
+            identifier=task.identifier,
+            period=task.period,
+            activation_date=task.activation_date,
+            wcet=task.wcet,
+            deadline=task.deadline,
+        )
+
+    # add a processor
+    configuration.add_processor(name="CPU 1", identifier=1)
+
+    # add a scheduler
+    configuration.scheduler_info.filename = "./src/schedulers/EDF_mono.py"
+    # configuration.scheduler_info.clas = "simso.schedulers.RM"
 
     # check the config before trying to run it
     configuration.check_all()
@@ -76,16 +98,14 @@ def main(argv):
     # execute the simulation
     model.run_model()
 
-    # print logs
-    for log in model.logs:
-        print(log)
+    # save the results
+    save_results(model)
 
-    # print computation times
-    for task in model.results.tasks:
-        print(task.name + ":")
-        for job in task.jobs:
-            print("%s %.3f ms" % (job.name, job.computation_time))
+    # plot the gantt chart
+    plot_task_set(task_list)
+    # plot the results
+    plot_results()
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    main()
