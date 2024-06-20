@@ -42,7 +42,9 @@ def parse_logs() -> dict[str, list[tuple[float, float]]]:
     return task_intervals
 
 
-def plot_chart(task_intervals: dict[str, list[tuple[float, float]]]) -> None:
+def plot_chart(
+    task_intervals: dict[str, list[tuple[float, float]]], save: bool
+) -> None:
     # Create a Gantt chart
     fig, ax = plt.subplots(figsize=(10, 6))
 
@@ -81,9 +83,13 @@ def plot_chart(task_intervals: dict[str, list[tuple[float, float]]]) -> None:
     # Show grid
     ax.grid(True)
 
+    if save:
+        # Save the plot
+        plt.savefig(FileNames.RESULTS_DIR.value + "task_execution.png")
+
     # Display the plot
     plt.show()
 
 
-def plot_results() -> None:
-    plot_chart(parse_logs())
+def plot_results(save: bool = False) -> None:
+    plot_chart(parse_logs(), save)

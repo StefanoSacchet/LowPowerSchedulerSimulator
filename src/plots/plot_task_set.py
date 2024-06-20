@@ -3,9 +3,10 @@ import matplotlib.patches as mpatches
 from typing import List
 
 from src.types.Task import Task
+from src.config import FileNames
 
 
-def plot_task_set(tasks: List[Task]) -> None:
+def plot_task_set(tasks: List[Task], save: bool = False) -> None:
     # Determine the plotting range
     time_range = max(task.deadline for task in tasks) * 2
 
@@ -34,6 +35,10 @@ def plot_task_set(tasks: List[Task]) -> None:
 
     # Set title
     plt.title("Task Set Gantt Chart")
+
+    if save:
+        # Save plot
+        plt.savefig(FileNames.RESULTS_DIR.value + "task_set.png")
 
     # Show plot
     plt.show()

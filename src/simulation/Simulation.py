@@ -77,9 +77,9 @@ class Simulation(BaseModel):
         self.model.run_model()
         self.save_results()
         # plot tasks gantt chart
-        plot_task_set(self.task_list)
+        plot_task_set(self.task_list, save=True)
         # plot results gantt chart
-        plot_results()
+        plot_results(save=True)
 
     def __init__(self):
         super().__init__()
