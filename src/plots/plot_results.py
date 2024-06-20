@@ -34,9 +34,9 @@ def parse_logs() -> dict[str, list[tuple[float, float]]]:
             task_intervals[task_name] = []
 
         if action == "Executing":
-            start = timestamp / 1000000
+            start = timestamp / 1e6
         elif action == "Terminated.":
-            end = timestamp / 1000000
+            end = timestamp / 1e6
             task_intervals[task_name].append((start, end))
 
     return task_intervals

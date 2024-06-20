@@ -17,7 +17,7 @@ class EDF_mono(Scheduler):
         job.cpu.resched() # call the scheduler
 
     # called by the processor when it needs to run the scheduler
-    def schedule(self, cpu: Processor):
+    def schedule(self, cpu: Processor): #TODO implement low power scheduler
         if self.ready_list:  # If at least one job is ready:
             # job with the highest priority
             job: Job = min(self.ready_list, key=lambda x: x.absolute_deadline)

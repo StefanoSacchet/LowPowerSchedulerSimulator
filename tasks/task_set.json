@@ -1,0 +1,28 @@
+{
+    "tasks": [
+        {
+            "name": "T1",
+            "identifier": 1,
+            "period": 7,
+            "activation_date": 0,
+            "wcet": 3,
+            "deadline": 7
+        },
+        {
+            "name": "T2",
+            "identifier": 2,
+            "period": 12,
+            "activation_date": 0,
+            "wcet": 3,
+            "deadline": 12
+        },
+        {
+            "name": "T3",
+            "identifier": 3,
+            "period": 20,
+            "activation_date": 0,
+            "wcet": 5,
+            "deadline": 20
+        }
+    ]
+}
