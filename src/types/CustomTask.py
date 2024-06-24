@@ -1,15 +1,10 @@
-from pydantic import BaseModel
+from src.types.Task import Task
 
 
-class Task(BaseModel):
-    """Task class that represents a simso task"""
+class CustomTask(Task):
+    """Custom task class that adds energy consumption to task class"""
 
-    name: str
-    identifier: int
-    period: int
-    activation_date: int
-    wcet: int  # worst-case execution time
-    deadline: int
+    energy_consumption: int = 0
 
     def __init__(
         self,
@@ -19,6 +14,7 @@ class Task(BaseModel):
         activation_date: int,
         wcet: int,
         deadline: int,
+        energy_consumption: int,
     ):
         super().__init__(
             name=name,
@@ -28,3 +24,4 @@ class Task(BaseModel):
             wcet=wcet,
             deadline=deadline,
         )
+        self.energy_consumption = energy_consumption

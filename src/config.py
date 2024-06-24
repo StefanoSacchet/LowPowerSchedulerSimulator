@@ -3,6 +3,8 @@ from enum import Enum
 
 # file names
 class FileNames(Enum):
+    """File names for the simulation results and task sets"""
+
     RESULTS_DIR = "results/"  # direcotry for simulation results
     TASKS_DIR = "tasks/"  # directory for task sets
     LOGS_NAME = "logs.log"

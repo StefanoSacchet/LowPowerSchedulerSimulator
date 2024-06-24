@@ -2,11 +2,11 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 from typing import List
 
-from src.types.Task import Task
 from src.config import FileNames
+from src.types.CustomTask import CustomTask
 
 
-def plot_task_set(tasks: List[Task], save: bool = False) -> None:
+def plot_task_set(tasks: List[CustomTask], save: bool = False) -> None:
     # Determine the plotting range
     time_range = max(task.deadline for task in tasks) * 2
 

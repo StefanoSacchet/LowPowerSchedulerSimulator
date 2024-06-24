@@ -5,24 +5,26 @@ from simso.configuration import Configuration
 import os
 import json
 
-from src.types.Task import Task
 from src.config import FileNames
 from src.plots.plot_task_set import plot_task_set
 from src.plots.plot_results import plot_results
+from src.types.CustomTask import CustomTask
 
 
 class Simulation(BaseModel):
-    task_list: List[Task] = []
+    """Simulation class that runs the simulation using the task set and configuration"""
+
+    task_list: List[CustomTask] = []
     configuration: Configuration = None
     model: Model = None
 
-    def get_task_set(self) -> List[Task]:
+    def get_task_set(self) -> List[CustomTask]:
         # read json file
-        task_list: List[Task] = []
+        task_list: List[CustomTask] = []
         with open(FileNames.TASKS_DIR.value + FileNames.TASKS_NAME.value) as f:
             data = json.load(f)
             # Convert JSON data to Task objects
-            task_list = [Task(**task_data) for task_data in data["tasks"]]
+            task_list = [CustomTask(**task_data) for task_data in data["tasks"]]
 
         return task_list
 
@@ -59,6 +61,7 @@ class Simulation(BaseModel):
                 activation_date=task.activation_date,
                 wcet=task.wcet,
                 deadline=task.deadline,
+                data=task.energy_consumption,  # use data field to store energy
             )
 
         # add a processor
@@ -73,13 +76,14 @@ class Simulation(BaseModel):
 
         return config
 
-    def run_sim(self) -> None:
+    def run_sim(self, plot: bool) -> None:
         self.model.run_model()
         self.save_results()
-        # plot tasks gantt chart
-        plot_task_set(self.task_list, save=True)
-        # plot results gantt chart
-        plot_results(save=True)
+        if plot:
+            # plot tasks gantt chart
+            plot_task_set(self.task_list, save=True)
+            # plot results gantt chart
+            plot_results(save=True)
 
     def __init__(self):
         super().__init__()

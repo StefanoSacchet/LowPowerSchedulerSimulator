@@ -1,8 +1,12 @@
 from simso.core import Scheduler
 from simso.core.Job import Job
 from simso.core.Processor import Processor
+from typing import List
+
 
 class EDF_mono(Scheduler):
+    """Earliest Deadline First (EDF) scheduler"""
+
     # called when simulation is ready to start
     def init(self):
         self.ready_list = []
@@ -10,14 +14,15 @@ class EDF_mono(Scheduler):
     # on task activation
     def on_activate(self, job: Job):
         self.ready_list.append(job)
-        job.cpu.resched() # call the scheduler
+        job.cpu.resched()  # call the scheduler
 
     def on_terminated(self, job: Job):
         self.ready_list.remove(job)
-        job.cpu.resched() # call the scheduler
+        job.cpu.resched()  # call the scheduler
 
     # called by the processor when it needs to run the scheduler
-    def schedule(self, cpu: Processor): #TODO implement low power scheduler
+    def schedule(self, cpu: Processor):  # TODO implement low power scheduler
+        self.ready_list: List[Job]  # job.data stores the energy consumption for the job
         if self.ready_list:  # If at least one job is ready:
             # job with the highest priority
             job: Job = min(self.ready_list, key=lambda x: x.absolute_deadline)

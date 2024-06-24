@@ -6,7 +6,8 @@
             "period": 7,
             "activation_date": 0,
             "wcet": 3,
-            "deadline": 7
+            "deadline": 7,
+            "energy_consumption": 1
         },
         {
             "name": "T2",
@@ -14,7 +15,8 @@
             "period": 12,
             "activation_date": 0,
             "wcet": 3,
-            "deadline": 12
+            "deadline": 12,
+            "energy_consumption": 2
         },
         {
             "name": "T3",
@@ -22,7 +24,8 @@
             "period": 20,
             "activation_date": 0,
             "wcet": 5,
-            "deadline": 20
+            "deadline": 20,
+            "energy_consumption": 3
         }
     ]
 }
