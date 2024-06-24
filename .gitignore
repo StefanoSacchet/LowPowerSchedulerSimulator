@@ -11,8 +11,8 @@ __pycache__/
 .env
 .venv
 
-# results
-results/
-
 # .vscode
 .vscode/
+
+# simulation inputs
+simulation_params/

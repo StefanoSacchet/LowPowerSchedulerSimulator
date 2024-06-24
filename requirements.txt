@@ -1,4 +1,2 @@
 pydantic
-# simso # it needs to be installed from github repo for python 3.12
-simsogui
 matplotlib
