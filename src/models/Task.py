@@ -8,6 +8,7 @@ class Task(BaseModel):
     id: int
     name: str
     period: int
+    activation_date: int
     deadline: int
     wcet: int  # worst-case execution time
     energy_requirement: int
@@ -19,6 +20,7 @@ class Task(BaseModel):
         id: int,
         name: str,
         period: int,
+        activation_date: int,
         deadline: int,
         wcet: int,
         energy_requirement: int,
@@ -29,17 +31,10 @@ class Task(BaseModel):
             id=id,
             name=name,
             period=period,
+            activation_date=activation_date,
             deadline=deadline,
             wcet=wcet,
             energy_requirement=energy_requirement,
             priority=priority,
             description=description,
         )
-        self.id = id
-        self.name = name
-        self.period = period
-        self.deadline = deadline
-        self.wcet = wcet
-        self.energy_requirement = energy_requirement
-        self.priority = priority
-        self.description = description
