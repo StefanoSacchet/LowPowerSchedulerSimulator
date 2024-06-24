@@ -13,6 +13,3 @@ __pycache__/
 
 # .vscode
 .vscode/
-
-# simulation inputs
-simulation_params/

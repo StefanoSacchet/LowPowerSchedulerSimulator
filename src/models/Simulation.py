@@ -3,12 +3,13 @@ from typing import List
 
 from src.models.Capacitor import Capacitor
 from src.models.Task import Task
+from src.models.Configuration import Configuration
 
 
 class Simulation(BaseModel):
     """Model to simulate task scheduling"""
 
-    __tick: int
+    __tick: int = 0  # current tick
 
     tick_duration: int  # duration of a tick in ms
     num_ticks: int = 0  # simulation duration
@@ -18,22 +19,15 @@ class Simulation(BaseModel):
 
     def __init__(
         self,
-        tick_duration: int,
-        capacitor: Capacitor,
-        task_list: List[Task],
-        energy_trace: List[int],
+        configuration: Configuration,
     ):
         super().__init__(
-            tick_duration=tick_duration,
-            capacitor=capacitor,
-            task_list=task_list,
-            energy_trace=energy_trace,
+            tick_duration=configuration.tick_duration,
+            capacitor=configuration.capacitor,
+            task_list=configuration.task_list,
+            energy_trace=configuration.energy_trace,
         )
-        self.num_ticks = len(energy_trace)
-        # self.tick_duration = tick_duration
-        # self.capacitor = capacitor
-        # self.task_list = task_list
-        # self.energy_trace = energy_trace
+        self.num_ticks = len(configuration.energy_trace)
 
     def run(self):
         print("tick_duration", self.tick_duration)

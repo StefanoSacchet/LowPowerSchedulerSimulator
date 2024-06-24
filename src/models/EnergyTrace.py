@@ -20,7 +20,7 @@ class EnergyTrace(BaseModel):
                 f.write(f"{energy}\n")
 
     def generate_energy_trace(self, max_energy: int, num_ticks: int) -> None:
-        # generate list long simulation_duration between 0 and max_energy mJ
+        # generate list long num_ticks, between 0 and max_energy mJ
         energy_trace = [random.randint(0, max_energy) for _ in range(num_ticks)]
         self.save_energy_trace(energy_trace)
 
