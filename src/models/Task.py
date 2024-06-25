@@ -15,6 +15,10 @@ class Task(BaseModel):
     priority: Optional[int] = None
     description: Optional[str] = None
 
+    is_active: bool = False
+    next_activaton: int = 0
+    time_remaining: int = 0
+
     def __init__(
         self,
         id: int,
@@ -38,3 +42,8 @@ class Task(BaseModel):
             priority=priority,
             description=description,
         )
+        self.time_remaining = wcet
+        self.next_activaton = activation_date
+
+    def is_ready(self, tick: int) -> bool:
+        return tick >= self.next_activaton

@@ -15,3 +15,7 @@ class FileNames(Enum):
 class ConfigCapacitor(Enum):
     ENERGY = 0
     MAX_ENERGY = 100
+
+
+class Schedulers(Enum):
+    EDF = "EDF"
