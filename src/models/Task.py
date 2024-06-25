@@ -12,8 +12,8 @@ class Task(BaseModel):
     deadline: int
     wcet: int  # worst-case execution time
     energy_requirement: int
-    priority: Optional[int] = None
-    description: Optional[str] = None
+    priority: Optional[int]
+    description: Optional[str]
 
     is_active: bool = False
     next_activaton: int = 0
