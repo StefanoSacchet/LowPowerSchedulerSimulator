@@ -21,4 +21,5 @@ class Capacitor(BaseModel):
         if self.energy >= energy_required:
             self.energy -= energy_required
             return True
+        self.energy = 0
         return False

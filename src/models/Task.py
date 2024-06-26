@@ -47,3 +47,7 @@ class Task(BaseModel):
 
     def is_ready(self, tick: int) -> bool:
         return tick >= self.next_activaton
+
+    def activate_task(self) -> None:
+        self.is_active = True
+        self.next_activaton += self.period

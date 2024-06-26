@@ -12,10 +12,13 @@ class FileNames(Enum):
     PLOT_TASK_SET = "plot_task_set.png"
 
 
-class ConfigCapacitor(Enum):
-    ENERGY = 0
-    MAX_ENERGY = 100
-
-
 class Schedulers(Enum):
     EDF = "EDF"
+
+
+class ConfigParams(Enum):
+    TICK_DURATION = 1
+
+    # capacitor
+    ENERGY = 0
+    MAX_ENERGY = 100

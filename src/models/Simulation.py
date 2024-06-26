@@ -35,8 +35,7 @@ class Simulation(BaseModel):
     def activate_tasks(self) -> None:
         for task in self.task_list:
             if task.is_ready(self.__tick) and not task.is_active:
-                task.is_active = True
-                task.next_activaton += task.period  # update next activation time
+                task.activate_task()  # set is_active to True and update next activation time
                 self.scheduler.on_activate(task)
 
     def execute_task(self, task: Task) -> None:
