@@ -1,0 +1,22 @@
+{
+    "task_set": [
+        {
+            "id": 1,
+            "name": "Example1",
+            "period": 10,
+            "activation_date": 0,
+            "deadline": 10,
+            "wcet": 10,
+            "energy_requirement": 10
+        },
+        {
+            "id": 2,
+            "name": "Example2",
+            "period": 20,
+            "activation_date": 0,
+            "deadline": 20,
+            "wcet": 20,
+            "energy_requirement": 20
+        }
+    ]
+}
