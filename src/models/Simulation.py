@@ -5,6 +5,8 @@ from src.models.Capacitor import Capacitor
 from src.models.Task import Task
 from src.models.Configuration import Configuration
 from src.models.Scheduler import Scheduler
+from src.logger.Logger import Logger
+from src.config.Config import TaskStates
 
 
 class Simulation(BaseModel):
@@ -18,6 +20,7 @@ class Simulation(BaseModel):
     task_list: List[Task]
     energy_trace: List[int]  # energy trace in mJ
     scheduler: Scheduler
+    logger: Logger
 
     def __init__(
         self,
@@ -29,6 +32,7 @@ class Simulation(BaseModel):
             task_list=configuration.task_list,
             energy_trace=configuration.energy_trace,
             scheduler=configuration.scheduler,
+            logger=configuration.logger,
         )
         self.num_ticks = len(configuration.energy_trace)
 
@@ -37,6 +41,9 @@ class Simulation(BaseModel):
             if task.is_ready(self.__tick) and not task.is_active:
                 task.activate_task()  # set is_active to True and update next activation time
                 self.scheduler.on_activate(task)
+                self.logger.log_csv(
+                    task.id, task.name, TaskStates.ACTIVATED.value, self.__tick
+                )
 
     def execute_task(self, task: Task) -> None:
         if (
@@ -45,10 +52,16 @@ class Simulation(BaseModel):
             # and self.capacitor.consume(task.energy_required)
         ):
             task.time_remaining -= 1
+            self.logger.log_csv(
+                task.id, task.name, TaskStates.EXECUTING.value, self.__tick
+            )
             if task.time_remaining == 0:
                 task.is_active = False
                 task.time_remaining = task.wcet  # reset time remaining
                 self.scheduler.on_terminate(task)
+                self.logger.log_csv(
+                    task.id, task.name, TaskStates.TERMINATED.value, self.__tick
+                )
 
     def run(self):
         # initialize scheduler

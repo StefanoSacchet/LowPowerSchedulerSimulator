@@ -8,6 +8,7 @@ from src.config.Config import DirNames, FileNames, ConfigParams
 from src.models.Capacitor import Capacitor
 from src.models.EnergyTrace import EnergyTrace
 from src.schedulers.EDF import EDF
+from src.logger.Logger import Logger
 
 
 class Configuration(BaseModel):
@@ -18,6 +19,7 @@ class Configuration(BaseModel):
     scheduler: Scheduler = None
     task_list: List[Task] = []
     energy_trace: List[int] = []
+    logger: Logger = None
 
     def __init__(
         self,
@@ -31,28 +33,23 @@ class Configuration(BaseModel):
         self.set_scheduler()
         self.set_task_list()
         self.set_energy_trace()
+        self.set_logger()
 
     def set_capacitor(self, capacitor: Capacitor = None) -> None:
-        if capacitor is not None and not isinstance(capacitor, Capacitor):
-            raise ValueError(
-                f"Capacitor must be of type Capacitor, not {type(capacitor)}"
-            )
         if capacitor is None:
             self.capacitor = Capacitor(
                 ConfigParams.ENERGY.value, ConfigParams.MAX_ENERGY.value
             )
         else:
+            assert isinstance(capacitor, Capacitor)
             print("Using provided capacitor")
             self.capacitor = capacitor
 
     def set_scheduler(self, scheduler: Scheduler = None) -> None:
-        if scheduler is not None and not isinstance(scheduler, Scheduler):
-            raise ValueError(
-                f"Scheduler must be of type Scheduler, not {type(scheduler)}"
-            )
         if scheduler is None:
             self.scheduler = EDF()
         else:
+            assert isinstance(scheduler, Scheduler)
             print("Using provided scheduler")
             self.scheduler = scheduler
 
@@ -75,3 +72,11 @@ class Configuration(BaseModel):
         else:
             print("Using provided energy trace")
             self.energy_trace = energy_trace
+
+    def set_logger(self, logger: Logger = None) -> None:
+        if logger is None:
+            self.logger = Logger(DirNames.RESULTS.value, FileNames.RESULTS.value)
+        else:
+            assert isinstance(logger, Logger)
+            print("Using provided logger")
+            self.logger = logger

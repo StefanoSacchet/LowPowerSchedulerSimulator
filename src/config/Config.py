@@ -10,10 +10,18 @@ class FileNames(Enum):
     ENERGY_TRACE = "energy_trace.log"
     TASK_SET = "task_set.json"
     PLOT_TASK_SET = "plot_task_set.png"
+    PLOT_RESULTS = "plot_results.png"
+    RESULTS = "results.csv"
 
 
 class Schedulers(Enum):
     EDF = "EDF"
+
+
+class TaskStates(Enum):
+    ACTIVATED = "ACTIVATED"
+    EXECUTING = "EXECUTING"
+    TERMINATED = "TERMINATED"
 
 
 class ConfigParams(Enum):

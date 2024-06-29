@@ -14,6 +14,8 @@ if __name__ == "__main__":
     sim = Simulation(configuration)
     sim.run()
 
-    plot = Plot()
+    plot = Plot(sim.task_list)
     # plot task set
-    plot.plot_task_set(sim.num_ticks, sim.task_list, save=True)
+    plot.plot_task_set(sim.num_ticks, save=True)
+    # plot results
+    plot.plot_results(save=True)

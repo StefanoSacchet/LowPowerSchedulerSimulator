@@ -1,3 +1,4 @@
 pydantic
 matplotlib
 pytest
+pandas
