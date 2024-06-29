@@ -73,7 +73,7 @@ class Simulation(BaseModel):
 
             # check if any task is ready to be activated
             self.activate_tasks()
-            
+
             # call scheduler to choose task
             task = self.scheduler.schedule()
 

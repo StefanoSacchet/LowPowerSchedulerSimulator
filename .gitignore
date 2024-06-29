@@ -15,7 +15,8 @@ __pycache__/
 # .vscode
 .vscode/
 
-# simulation results
+# simulation results and params
 results/
+simulation_params/
 
 todo.txt
