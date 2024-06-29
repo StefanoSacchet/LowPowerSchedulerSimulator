@@ -22,6 +22,7 @@ class TaskStates(Enum):
     ACTIVATED = "ACTIVATED"
     EXECUTING = "EXECUTING"
     TERMINATED = "TERMINATED"
+    MISSED_DEADLINE = "MISSED_DEADLINE"
 
 
 class ConfigParams(Enum):

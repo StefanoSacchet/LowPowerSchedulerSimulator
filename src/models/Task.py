@@ -16,8 +16,9 @@ class Task(BaseModel):
     description: Optional[str]
 
     is_active: bool = False
-    next_activaton: int = 0
+    next_activation: int = 0
     time_remaining: int = 0
+    next_deadline: int = 0
 
     def __init__(
         self,
@@ -43,11 +44,16 @@ class Task(BaseModel):
             description=description,
         )
         self.time_remaining = wcet
-        self.next_activaton = activation_date
+        self.next_activation = activation_date
 
     def is_ready(self, tick: int) -> bool:
-        return tick >= self.next_activaton
+        return tick >= self.next_activation
 
     def activate_task(self) -> None:
         self.is_active = True
-        self.next_activaton += self.period
+        self.next_deadline = self.next_activation + self.deadline
+        self.next_activation += self.period
+
+    # check if task missed its deadline
+    def missed_deadline(self, tick: int) -> bool:
+        return tick > self.next_deadline and self.is_active

@@ -26,7 +26,7 @@ class TestTask:
         assert self.task.energy_requirement == 5
         assert not self.task.is_active
         assert self.task.time_remaining == self.task.wcet
-        assert self.task.next_activaton == self.task.activation_date
+        assert self.task.next_activation == self.task.activation_date
 
     def test_is_ready(self):
         assert not self.task.is_ready(4)
@@ -36,7 +36,7 @@ class TestTask:
     def test_activate_task(self):
         self.task.activate_task()
         assert self.task.is_active
-        assert self.task.next_activaton == 25
+        assert self.task.next_activation == 25
 
 
 class TestCapacitor:

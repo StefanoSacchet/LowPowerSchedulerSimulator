@@ -73,12 +73,22 @@ class Simulation(BaseModel):
 
             # check if any task is ready to be activated
             self.activate_tasks()
-
+            
             # call scheduler to choose task
             task = self.scheduler.schedule()
 
             # execute task
             if task is not None:
                 self.execute_task(task)
+
+            # check if any task missed deadline
+            for task in self.task_list:
+                if task.missed_deadline(self.__tick):
+                    self.logger.log_csv(
+                        task.id,
+                        task.name,
+                        TaskStates.MISSED_DEADLINE.value,
+                        self.__tick,
+                    )
 
             self.__tick += 1

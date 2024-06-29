@@ -18,5 +18,5 @@ class EDF(Scheduler):
         if len(self.ready_list) == 0:
             return None
 
-        self.ready_list.sort(key=lambda x: x.deadline)
+        self.ready_list.sort(key=lambda x: x.next_deadline)
         return self.ready_list[0]
