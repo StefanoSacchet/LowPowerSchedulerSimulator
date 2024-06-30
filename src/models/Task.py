@@ -56,4 +56,4 @@ class Task(BaseModel):
 
     # check if task missed its deadline
     def missed_deadline(self, tick: int) -> bool:
-        return tick > self.next_deadline and self.is_active
+        return tick >= self.next_deadline and self.is_active

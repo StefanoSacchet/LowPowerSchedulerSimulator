@@ -15,6 +15,7 @@ class EDF(Scheduler):
         self.ready_list.remove(task)
 
     def schedule(self) -> Task:
+        # TODO heap q
         if len(self.ready_list) == 0:
             return None
 

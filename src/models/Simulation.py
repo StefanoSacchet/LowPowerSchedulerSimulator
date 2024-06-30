@@ -71,16 +71,6 @@ class Simulation(BaseModel):
             # charge the capacitor
             self.capacitor.charge(energy_input)
 
-            # check if any task is ready to be activated
-            self.activate_tasks()
-
-            # call scheduler to choose task
-            task = self.scheduler.schedule()
-
-            # execute task
-            if task is not None:
-                self.execute_task(task)
-
             # check if any task missed deadline
             for task in self.task_list:
                 if task.missed_deadline(self.__tick):
@@ -90,5 +80,15 @@ class Simulation(BaseModel):
                         TaskStates.MISSED_DEADLINE.value,
                         self.__tick,
                     )
+
+            # check if any task is ready to be activated
+            self.activate_tasks()
+
+            # call scheduler to choose task
+            task = self.scheduler.schedule()
+
+            # execute task
+            if task is not None:
+                self.execute_task(task)
 
             self.__tick += 1
