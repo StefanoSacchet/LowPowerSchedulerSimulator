@@ -49,9 +49,10 @@ class TestConfiguration:
         configuration = Configuration(tick_duration=2)
         capacitor = Capacitor(20, 20)
         configuration.set_capacitor(capacitor)
-        configuration.set_task_list("./simulation_params/task_set.json")
+        configuration.set_task_list("./simulation_params/task_set_1.json")
         configuration.set_energy_trace(energy_trace)
         self.simulation = Simulation(configuration)
+
         assert self.simulation.tick_duration == 2
         assert self.simulation.capacitor.energy == 20
         assert self.simulation.capacitor.max_energy == 20
