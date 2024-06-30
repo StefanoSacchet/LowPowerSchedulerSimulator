@@ -120,7 +120,7 @@ class Plot(BaseModel):
             )
 
         # Show plot
-        plt.show()
+        plt.show(block=False)
 
     def plot_task_set(self, num_ticks: int, save: bool = False) -> None:
         time_range = num_ticks
@@ -177,4 +177,4 @@ class Plot(BaseModel):
             )
 
         # Show plot
-        plt.show()
+        plt.show(block=False)

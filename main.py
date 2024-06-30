@@ -21,3 +21,5 @@ if __name__ == "__main__":
     plot.plot_task_set(sim.num_ticks, save=True)
     # plot results
     plot.plot_results(save=True)
+
+    input("Press Enter to close...")

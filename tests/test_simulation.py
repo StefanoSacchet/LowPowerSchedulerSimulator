@@ -1,7 +1,6 @@
 import pytest
 import json
 import pandas as pd
-from pandas import DataFrame
 from typing import List
 
 from src.models.Simulation import Simulation
@@ -37,15 +36,25 @@ class TestSimulation:
         assert self.simulation.task_list == task_list
         assert self.simulation.energy_trace == EnergyTrace().get_energy_trace()
 
-    def test_task_set_1(self):
+    def test_task_set_2(self):
         self.simulation.run()
         with open(DirNames.RESULTS.value + FileNames.RESULTS.value, "r") as f:
             results = pd.read_csv(f)
 
+        # test task activation
         assert results["state"][0] == TaskStates.ACTIVATED.value
         assert results["state"][1] == TaskStates.ACTIVATED.value
 
-        # find row with tick 24
+        results_tick_50 = results[results["tick"] == 50]
+        assert TaskStates.ACTIVATED.value in results_tick_50["state"].values
+
+        results_tick_75 = results[results["tick"] == 75]
+        assert TaskStates.ACTIVATED.value in results_tick_75["state"].values
+
+        results_tick_100 = results[results["tick"] == 100]
+        assert TaskStates.ACTIVATED.value in results_tick_100["state"].values
+
+        # test task termination
         results_tick_24 = results[results["tick"] == 24]
         assert TaskStates.TERMINATED.value in results_tick_24["state"].values
 
