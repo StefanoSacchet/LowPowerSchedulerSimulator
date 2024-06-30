@@ -60,7 +60,7 @@ class Simulation(BaseModel):
                 task.time_remaining = task.wcet  # reset time remaining
                 self.scheduler.on_terminate(task)
                 self.logger.log_csv(
-                    task.id, task.name, TaskStates.TERMINATED.value, self.__tick
+                    task.id, task.name, TaskStates.TERMINATED.value, self.__tick + 1
                 )
 
     def run(self):
