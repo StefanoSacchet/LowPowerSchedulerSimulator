@@ -1,9 +1,14 @@
-from pydantic import BaseModel
 from typing import Optional
+from pydantic import BaseModel
+
+from src.models.Job import Job
 
 
 class Task(BaseModel):
-    """Model for task's parameters"""
+    """
+    This class simulate the behavior of the simulated task. It controls the
+    release of the jobs
+    """
 
     id: int
     name: str
@@ -15,10 +20,7 @@ class Task(BaseModel):
     priority: Optional[int]
     description: Optional[str]
 
-    is_active: bool = False
-    next_activation: int = 0
-    time_remaining: int = 0
-    next_deadline: int = 0
+    next_activation: int
 
     def __init__(
         self,
@@ -42,18 +44,20 @@ class Task(BaseModel):
             energy_requirement=energy_requirement,
             priority=priority,
             description=description,
+            next_activation=activation_date,
         )
-        self.time_remaining = wcet
-        self.next_activation = activation_date
 
     def is_ready(self, tick: int) -> bool:
         return tick >= self.next_activation
 
-    def activate_task(self) -> None:
-        self.is_active = True
-        self.next_deadline = self.next_activation + self.deadline
+    def generate_job(self, job_id: int, tick: int) -> Job:
+        job = Job(
+            id=job_id,
+            task_id=self.id,
+            name=self.name,
+            deadline=tick + self.deadline,
+            wcet=self.wcet,
+            energy_requirement=self.energy_requirement,
+        )
         self.next_activation += self.period
-
-    # check if task missed its deadline
-    def missed_deadline(self, tick: int) -> bool:
-        return tick >= self.next_deadline and self.is_active
+        return job

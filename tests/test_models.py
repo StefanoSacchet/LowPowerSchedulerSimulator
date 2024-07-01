@@ -24,8 +24,6 @@ class TestTask:
         assert self.task.deadline == 20
         assert self.task.wcet == 10
         assert self.task.energy_requirement == 5
-        assert not self.task.is_active
-        assert self.task.time_remaining == self.task.wcet
         assert self.task.next_activation == self.task.activation_date
 
     def test_is_ready(self):
@@ -34,8 +32,14 @@ class TestTask:
         assert self.task.is_ready(6)
 
     def test_activate_task(self):
-        self.task.activate_task()
-        assert self.task.is_active
+        job = self.task.generate_job(1, 0)
+        assert job.id == 1
+        assert job.task_id == 1
+        assert job.name == "T1"
+        assert job.deadline == 20
+        assert job.wcet == 10
+        assert job.energy_requirement == 5
+        assert job.time_remaining == 10
         assert self.task.next_activation == 25
 
 

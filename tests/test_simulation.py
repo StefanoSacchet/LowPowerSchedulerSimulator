@@ -329,17 +329,37 @@ class TestSimulation3:
         res = results.query(
             f'tick == 16 and id == 1 and state == "{TaskStates.TERMINATED.value}"'
         )
-        assert len(res) == 1
+        assert len(res) == 0
         res = results.query(
-            f'tick == 18 and id == 4 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 16 and id == 4 and state == "{TaskStates.TERMINATED.value}"'
+        )
+        assert len(res) == 0
+        res = results.query(
+            f'tick == 18 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 20 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 20 and id == 1 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 24 and id == 3 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 23 and id == 4 and state == "{TaskStates.TERMINATED.value}"'
         )
 
         # test missed deadlines
+        res = results.query(
+            f'tick == 15 and id == 1 and state == "{TaskStates.MISSED_DEADLINE.value}"'
+        )
+        assert len(res) == 1
+        res = results.query(
+            f'tick == 16 and id == 4 and state == "{TaskStates.MISSED_DEADLINE.value}"'
+        )
+        assert len(res) == 1
+        res = results.query(
+            f'tick == 21 and id == 3 and state == "{TaskStates.MISSED_DEADLINE.value}"'
+        )
+        assert len(res) == 1
+        res = results.query(
+            f'tick == 24 and id == 2 and state == "{TaskStates.MISSED_DEADLINE.value}"'
+        )
+        assert len(res) == 1

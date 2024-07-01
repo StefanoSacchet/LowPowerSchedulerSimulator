@@ -54,9 +54,7 @@ def run_task_set_3() -> Simulation:
 
 if __name__ == "__main__":
     # sim = run_task_set_1()
-
     # sim = run_task_set_2()
-
     sim = run_task_set_3()
 
     plot = Plot(sim.task_list)
