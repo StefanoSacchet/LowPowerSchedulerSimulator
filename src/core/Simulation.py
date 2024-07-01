@@ -1,11 +1,11 @@
 from pydantic import BaseModel
 from typing import List
 
-from src.models.Capacitor import Capacitor
-from src.models.Task import Task
-from src.models.Job import Job
-from src.models.Configuration import Configuration
-from src.models.Scheduler import Scheduler
+from src.core.Capacitor import Capacitor
+from src.core.tasks.Task import Task
+from src.core.tasks.Job import Job
+from src.core.Configuration import Configuration
+from src.core.schedulers.Scheduler import Scheduler
 from src.logger.Logger import Logger
 from src.config.Config import TaskStates
 
@@ -77,6 +77,8 @@ class Simulation(BaseModel):
         for energy_input in self.energy_trace:
             # charge the capacitor
             self.capacitor.charge(energy_input)
+            # update scheduler with energy
+            self.scheduler.on_energy_update(self.capacitor.energy)
 
             # check if any job missed deadline
             self.handle_missed_deadline()

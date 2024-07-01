@@ -1,5 +1,5 @@
-from src.models.Task import Task
-from src.models.Capacitor import Capacitor
+from src.core.tasks.Task import Task
+from src.core.Capacitor import Capacitor
 
 
 class TestTask:

@@ -2,12 +2,12 @@ from pydantic import BaseModel
 from typing import List
 import json
 
-from src.models.Scheduler import Scheduler
-from src.models.Task import Task
+from src.core.schedulers.Scheduler import Scheduler
+from src.core.tasks.Task import Task
 from src.config.Config import DirNames, FileNames, ConfigParams
-from src.models.Capacitor import Capacitor
-from src.models.EnergyTrace import EnergyTrace
-from src.schedulers.EDF import EDF
+from src.core.Capacitor import Capacitor
+from src.core.EnergyTrace import EnergyTrace
+from src.core.schedulers.EDF import EDF
 from src.logger.Logger import Logger
 
 

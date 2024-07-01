@@ -3,11 +3,11 @@ import json
 import pandas as pd
 from typing import List
 
-from src.models.Simulation import Simulation
-from src.models.Configuration import Configuration
-from src.models.Task import Task
+from src.core.Simulation import Simulation
+from src.core.Configuration import Configuration
+from src.core.tasks.Task import Task
 from src.config.Config import ConfigParams, DirNames, FileNames
-from src.models.EnergyTrace import EnergyTrace
+from src.core.EnergyTrace import EnergyTrace
 from src.config.Config import TaskStates
 
 """

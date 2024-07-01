@@ -2,13 +2,13 @@ import pytest
 import json
 from typing import List
 
-from src.models.Simulation import Simulation
-from src.models.Configuration import Configuration
-from src.models.Task import Task
+from src.core.Simulation import Simulation
+from src.core.Configuration import Configuration
+from src.core.tasks.Task import Task
 from src.config.Config import ConfigParams
 from src.config.Config import DirNames, FileNames
-from src.models.EnergyTrace import EnergyTrace
-from src.models.Capacitor import Capacitor
+from src.core.EnergyTrace import EnergyTrace
+from src.core.Capacitor import Capacitor
 
 
 @pytest.fixture

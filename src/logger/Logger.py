@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 import os
 
-from src.models.Job import Job
+from src.core.tasks.Job import Job
 from src.config.Config import TaskStates
 
 

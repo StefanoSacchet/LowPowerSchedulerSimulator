@@ -1,7 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel
 
-from src.models.Job import Job
+from src.core.tasks.Job import Job
 
 
 class Task(BaseModel):

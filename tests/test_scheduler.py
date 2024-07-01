@@ -1,7 +1,7 @@
 import pytest
 
-from src.schedulers.EDF import EDF
-from src.models.Task import Task
+from src.core.schedulers.EDF import EDF
+from src.core.tasks.Task import Task
 
 
 @pytest.fixture

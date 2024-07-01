@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from pydantic import BaseModel
 from typing import List
 
-from src.models.Job import Job
+from src.core.tasks.Job import Job
 
 
 class Scheduler(ABC, BaseModel):
@@ -11,6 +11,7 @@ class Scheduler(ABC, BaseModel):
     """
 
     ready_list: List[Job] = []  # list of jobs that are ready to be scheduled
+    energy: int = 0  # energy available to the scheduler
 
     @abstractmethod
     def init(self) -> None:
@@ -22,6 +23,10 @@ class Scheduler(ABC, BaseModel):
 
     @abstractmethod
     def on_terminate(self, task: Job) -> None:
+        pass
+
+    @abstractmethod
+    def on_energy_update(self, energy: int) -> None:
         pass
 
     @abstractmethod

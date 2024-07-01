@@ -6,7 +6,7 @@ from itertools import cycle
 from typing import List, Dict
 import pandas as pd
 
-from src.models.Task import Task
+from src.core.tasks.Task import Task
 from src.config.Config import DirNames, FileNames
 
 

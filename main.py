@@ -1,7 +1,7 @@
-from src.models.Simulation import Simulation
-from src.models.Configuration import Configuration
+from src.core.Simulation import Simulation
+from src.core.Configuration import Configuration
 from src.plots.Plot import Plot
-from src.models.EnergyTrace import EnergyTrace
+from src.core.EnergyTrace import EnergyTrace
 
 
 def run_task_set_1() -> Simulation:
