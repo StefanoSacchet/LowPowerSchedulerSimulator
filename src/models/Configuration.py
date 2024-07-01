@@ -60,7 +60,7 @@ class Configuration(BaseModel):
             ) as f:
                 task_list = json.load(f)
         else:
-            print("Using provided task list")
+            print("Using provided task list", path.split("/")[-1])
             with open(path, "r") as f:
                 task_list = json.load(f)
 
