@@ -61,6 +61,6 @@ if __name__ == "__main__":
     # plot task set
     plot.plot_task_set(sim.num_ticks, save=True)
     # plot results
-    plot.plot_results(save=True)
+    plot.plot_results(sim.num_ticks, save=True)
 
     input("Press Enter to close...")

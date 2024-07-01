@@ -22,7 +22,7 @@ class Plot(BaseModel):
         for task in task_list:
             self.task_color_map[task.id] = next(colors)
 
-    def plot_results(self, save=False) -> None:
+    def plot_results(self, time_range: int = None, save: bool = False) -> None:
         # Read the CSV file
         df = pd.read_csv(os.path.join(DirNames.RESULTS.value, FileNames.RESULTS.value))
 
@@ -75,7 +75,8 @@ class Plot(BaseModel):
                 )
 
         # Plot deadlines
-        time_range = len(df)
+        if time_range is None:
+            time_range = len(df)
         for task in self.task_list:
             periods = range(task.activation_date, time_range, task.period)
             for start in periods:
