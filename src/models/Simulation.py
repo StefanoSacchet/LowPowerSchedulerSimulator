@@ -45,28 +45,25 @@ class Simulation(BaseModel):
                 self.job_list.append(job)
                 self.scheduler.on_activate(job)
                 self.logger.log_csv(
-                    job.task_id, job.name, TaskStates.ACTIVATED.value, self.__tick
+                    job,
+                    TaskStates.ACTIVATED.value,
+                    self.__tick,
                 )
 
     def execute_job(self, job: Job) -> None:
         if job.execute():
-            self.logger.log_csv(
-                job.task_id, job.name, TaskStates.EXECUTING.value, self.__tick
-            )
+            self.logger.log_csv(job, TaskStates.EXECUTING.value, self.__tick)
             if job.is_complete():
                 job.is_active = False
                 self.job_list.remove(job)
                 self.scheduler.on_terminate(job)
-                self.logger.log_csv(
-                    job.task_id, job.name, TaskStates.TERMINATED.value, self.__tick + 1
-                )
+                self.logger.log_csv(job, TaskStates.TERMINATED.value, self.__tick + 1)
 
     def handle_missed_deadline(self) -> None:
         for job in self.job_list:
             if self.__tick >= job.deadline:
                 self.logger.log_csv(
-                    job.task_id,
-                    job.name,
+                    job,
                     TaskStates.MISSED_DEADLINE.value,
                     self.__tick,
                 )
@@ -83,16 +80,6 @@ class Simulation(BaseModel):
 
             # check if any job missed deadline
             self.handle_missed_deadline()
-            # for job in self.job_list:
-            #     if self.__tick >= job.deadline:
-            #         self.logger.log_csv(
-            #             job.task_id,
-            #             job.name,
-            #             TaskStates.MISSED_DEADLINE.value,
-            #             self.__tick,
-            #         )
-            #         self.job_list.remove(job)
-            #         self.scheduler.on_terminate(job)
 
             # check if any task is ready to be activated
             self.activate_jobs()

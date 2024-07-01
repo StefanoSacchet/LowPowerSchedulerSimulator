@@ -70,56 +70,56 @@ class TestSimulation1:
 
         # test task activation
         res = results.query(
-            f'tick == 5 and id == 2 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 5 and task_id == 2 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 10 and id == 2 and state =="{TaskStates.ACTIVATED.value}"'
+            f'tick == 10 and task_id == 2 and state =="{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 10 and id == 3 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 10 and task_id == 3 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 15 and id == 2 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 15 and task_id == 2 and state == "{TaskStates.ACTIVATED.value}"'
         )
 
         # test that taks are activated the correct number of times
-        res = results.query(f'id == 1 and state == "{TaskStates.ACTIVATED.value}"')
+        res = results.query(f'task_id == 1 and state == "{TaskStates.ACTIVATED.value}"')
         assert len(res) == 1
-        res = results.query(f'id == 2 and state == "{TaskStates.ACTIVATED.value}"')
+        res = results.query(f'task_id == 2 and state == "{TaskStates.ACTIVATED.value}"')
         assert len(res) == 4
-        res = results.query(f'id == 3 and state == "{TaskStates.ACTIVATED.value}"')
+        res = results.query(f'task_id == 3 and state == "{TaskStates.ACTIVATED.value}"')
         assert len(res) == 2
 
         # test task termination
         res = results.query(
-            f'tick == 2 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 2 and task_id == 2 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 5 and id == 1 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 5 and task_id == 1 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 7 and id == 3 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 7 and task_id == 3 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 9 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 9 and task_id == 2 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 12 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 12 and task_id == 2 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 14 and id == 3 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 14 and task_id == 3 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 17 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 17 and task_id == 2 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
 
@@ -157,43 +157,43 @@ class TestSimulation2:
 
         # test task activation
         res = results.query(
-            f'tick == 50 and id == 1 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 50 and task_id == 1 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 75 and id == 2 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 75 and task_id == 2 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 100 and id == 1 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 100 and task_id == 1 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) > 0
 
         # test that taks are activated the correct number of times
-        res = results.query(f'id == 1 and state == "{TaskStates.ACTIVATED.value}"')
+        res = results.query(f'task_id == 1 and state == "{TaskStates.ACTIVATED.value}"')
         assert len(res) == 3
-        res = results.query(f'id == 2 and state == "{TaskStates.ACTIVATED.value}"')
+        res = results.query(f'task_id == 2 and state == "{TaskStates.ACTIVATED.value}"')
         assert len(res) == 2
 
         # test task termination
         res = results.query(
-            f'tick == 25 and id == 1 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 25 and task_id == 1 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 55 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 55 and task_id == 2 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 80 and id == 1 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 80 and task_id == 1 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 110 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 110 and task_id == 2 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) > 0
         res = results.query(
-            f'tick == 135 and id == 1 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 135 and task_id == 1 and state == "{TaskStates.TERMINATED.value}"'
         )
 
         # test no missed deadlines
@@ -232,134 +232,134 @@ class TestSimulation3:
 
         # test task activation
         res = results.query(
-            f'tick == 5 and id == 1 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 5 and task_id == 1 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 6 and id == 2 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 6 and task_id == 2 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 7 and id == 3 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 7 and task_id == 3 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 8 and id == 4 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 8 and task_id == 4 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 10 and id == 1 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 10 and task_id == 1 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 12 and id == 2 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 12 and task_id == 2 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 14 and id == 3 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 14 and task_id == 3 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 15 and id == 1 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 15 and task_id == 1 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 16 and id == 4 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 16 and task_id == 4 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 18 and id == 2 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 18 and task_id == 2 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 20 and id == 1 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 20 and task_id == 1 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 21 and id == 3 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 21 and task_id == 3 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 24 and id == 2 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 24 and task_id == 2 and state == "{TaskStates.ACTIVATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 24 and id == 4 and state == "{TaskStates.ACTIVATED.value}"'
+            f'tick == 24 and task_id == 4 and state == "{TaskStates.ACTIVATED.value}"'
         )
 
         # test that taks are activated the correct number of times
-        res = results.query(f'id == 1 and state == "{TaskStates.ACTIVATED.value}"')
+        res = results.query(f'task_id == 1 and state == "{TaskStates.ACTIVATED.value}"')
         assert len(res) == 5
-        res = results.query(f'id == 2 and state == "{TaskStates.ACTIVATED.value}"')
+        res = results.query(f'task_id == 2 and state == "{TaskStates.ACTIVATED.value}"')
         assert len(res) == 5
-        res = results.query(f'id == 3 and state == "{TaskStates.ACTIVATED.value}"')
+        res = results.query(f'task_id == 3 and state == "{TaskStates.ACTIVATED.value}"')
         assert len(res) == 4
-        res = results.query(f'id == 4 and state == "{TaskStates.ACTIVATED.value}"')
+        res = results.query(f'task_id == 4 and state == "{TaskStates.ACTIVATED.value}"')
         assert len(res) == 4
 
         # test task termination
         res = results.query(
-            f'tick == 2 and id == 1 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 2 and task_id == 1 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 4 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 4 and task_id == 2 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 6 and id == 3 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 6 and task_id == 3 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 8 and id == 4 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 8 and task_id == 4 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 10 and id == 1 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 10 and task_id == 1 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 12 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 12 and task_id == 2 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 14 and id == 3 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 14 and task_id == 3 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 16 and id == 1 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 16 and task_id == 1 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 0
         res = results.query(
-            f'tick == 16 and id == 4 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 16 and task_id == 4 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 0
         res = results.query(
-            f'tick == 18 and id == 2 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 18 and task_id == 2 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 20 and id == 1 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 20 and task_id == 1 and state == "{TaskStates.TERMINATED.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 23 and id == 4 and state == "{TaskStates.TERMINATED.value}"'
+            f'tick == 23 and task_id == 4 and state == "{TaskStates.TERMINATED.value}"'
         )
 
         # test missed deadlines
         res = results.query(
-            f'tick == 15 and id == 1 and state == "{TaskStates.MISSED_DEADLINE.value}"'
+            f'tick == 15 and task_id == 1 and state == "{TaskStates.MISSED_DEADLINE.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 16 and id == 4 and state == "{TaskStates.MISSED_DEADLINE.value}"'
+            f'tick == 16 and task_id == 4 and state == "{TaskStates.MISSED_DEADLINE.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 21 and id == 3 and state == "{TaskStates.MISSED_DEADLINE.value}"'
+            f'tick == 21 and task_id == 3 and state == "{TaskStates.MISSED_DEADLINE.value}"'
         )
         assert len(res) == 1
         res = results.query(
-            f'tick == 24 and id == 2 and state == "{TaskStates.MISSED_DEADLINE.value}"'
+            f'tick == 24 and task_id == 2 and state == "{TaskStates.MISSED_DEADLINE.value}"'
         )
         assert len(res) == 1
