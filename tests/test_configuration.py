@@ -13,7 +13,10 @@ from src.core.Capacitor import Capacitor
 
 @pytest.fixture
 def task_list() -> List[Task]:
-    with open(DirNames.SIMULATION_PARAMS.value + FileNames.TASK_SET.value, "r") as f:
+    with open(
+        DirNames.SIMULATION_PARAMS.value + DirNames.NORMAL.value + "task_set_1.json",
+        "r",
+    ) as f:
         task_list = json.load(f)
 
     return [Task(**task) for task in task_list["task_set"]]
@@ -23,7 +26,8 @@ def task_list() -> List[Task]:
 def energy_trace() -> List[int]:
     energy_trace: List[int] = []
     with open(
-        DirNames.SIMULATION_PARAMS.value + FileNames.ENERGY_TRACE.value, "r"
+        DirNames.SIMULATION_PARAMS.value + FileNames.ENERGY_TRACE.value,
+        "r",
     ) as f:
         for line in f:
             energy_trace.append(int(line))
@@ -49,7 +53,7 @@ class TestConfiguration:
         configuration = Configuration(tick_duration=2)
         capacitor = Capacitor(20, 20)
         configuration.set_capacitor(capacitor)
-        configuration.set_task_list("./simulation_params/task_set_1.json")
+        configuration.set_task_list("./simulation_params/normal/task_set_1.json")
         configuration.set_energy_trace(energy_trace)
         self.simulation = Simulation(configuration)
 

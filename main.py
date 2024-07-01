@@ -2,6 +2,7 @@ from src.core.Simulation import Simulation
 from src.core.Configuration import Configuration
 from src.plots.Plot import Plot
 from src.core.EnergyTrace import EnergyTrace
+from src.config.Config import DirNames
 
 
 def run_task_set_1() -> Simulation:
@@ -11,7 +12,9 @@ def run_task_set_1() -> Simulation:
     # setup configuration for simulation, in this case we are using default values
     configuration = Configuration()
 
-    configuration.set_task_list("./simulation_params/task_set_1.json")
+    configuration.set_task_list(
+        DirNames.SIMULATION_PARAMS.value + DirNames.NORMAL.value + "task_set_1.json"
+    )
 
     # run simulation
     sim = Simulation(configuration)
@@ -27,7 +30,9 @@ def run_task_set_2() -> Simulation:
     # setup configuration for simulation, in this case we are using default values
     configuration = Configuration()
 
-    configuration.set_task_list("./simulation_params/task_set_2.json")
+    configuration.set_task_list(
+        DirNames.SIMULATION_PARAMS.value + DirNames.NORMAL.value + "task_set_2.json"
+    )
 
     # run simulation
     sim = Simulation(configuration)
@@ -43,7 +48,9 @@ def run_task_set_3() -> Simulation:
     # setup configuration for simulation, in this case we are using default values
     configuration = Configuration()
 
-    configuration.set_task_list("./simulation_params/task_set_3.json")
+    configuration.set_task_list(
+        DirNames.SIMULATION_PARAMS.value + DirNames.NORMAL.value + "task_set_3.json"
+    )
 
     # run simulation
     sim = Simulation(configuration)

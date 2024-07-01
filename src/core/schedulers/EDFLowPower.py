@@ -5,7 +5,7 @@ from src.core.tasks.Job import Job
 from src.core.tasks.NOP import NOP
 
 
-class EDF(Scheduler):
+class EDFLowPower(Scheduler):
     """
     Earliest Deadline First scheduler
 
@@ -36,9 +36,13 @@ class EDF(Scheduler):
 
         self.ready_list.sort(key=lambda x: x.deadline)
 
-        # find first job with sufficient energy
         for job in self.ready_list:
-            if job.energy_requirement <= self.energy:
+            if (
+                job.energy_requirement <= self.energy
+                and current_tick + job.time_remaining <= job.deadline
+            ):
                 return job
+            else:
+                print("Job cannot be scheduled", current_tick)
 
         return NOP()

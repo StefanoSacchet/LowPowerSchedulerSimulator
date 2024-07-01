@@ -4,6 +4,7 @@ from typing import List
 from src.core.Capacitor import Capacitor
 from src.core.tasks.Task import Task
 from src.core.tasks.Job import Job
+from src.core.tasks.NOP import NOP
 from src.core.Configuration import Configuration
 from src.core.schedulers.Scheduler import Scheduler
 from src.logger.Logger import Logger
@@ -22,6 +23,7 @@ class Simulation(BaseModel):
     energy_trace: List[int]  # energy trace in mJ
     scheduler: Scheduler
     logger: Logger
+    prediction_len: int  # how many energy values the scheduler sees in the future
 
     job_list: List[Job] = []  # list to store active jobs
     next_job_id: int = 1  # counter for job IDs
@@ -34,6 +36,7 @@ class Simulation(BaseModel):
             energy_trace=configuration.energy_trace,
             scheduler=configuration.scheduler,
             logger=configuration.logger,
+            prediction_len=configuration.prediction_len,
             num_ticks=len(configuration.energy_trace),
         )
 
@@ -51,7 +54,7 @@ class Simulation(BaseModel):
                 )
 
     def execute_job(self, job: Job) -> None:
-        if job.execute():
+        if job.execute() and self.capacitor.discharge(job.energy_requirement):
             self.logger.log_csv(job, TaskStates.EXECUTING.value, self.__tick)
             if job.is_complete():
                 job.is_active = False
@@ -74,11 +77,12 @@ class Simulation(BaseModel):
         # initialize scheduler
         self.scheduler.init()
 
-        for energy_input in self.energy_trace:
+        for i, energy_input in enumerate(self.energy_trace):
             # charge the capacitor
             self.capacitor.charge(energy_input)
-            # update scheduler with energy
-            self.scheduler.on_energy_update(self.capacitor.energy)
+            # update scheduler with energy and next energy values
+            next_n_energy = self.energy_trace[i + 1 : i + self.prediction_len + 1]
+            self.scheduler.on_energy_update(self.capacitor.energy, next_n_energy)
 
             # check if any job missed deadline
             self.handle_missed_deadline()
@@ -87,10 +91,12 @@ class Simulation(BaseModel):
             self.activate_jobs()
 
             # call scheduler to choose job
-            job = self.scheduler.schedule()
+            job = self.scheduler.schedule(self.__tick)
 
             # execute job
-            if job is not None:
+            if not isinstance(job, NOP):
                 self.execute_job(job)
+            else:
+                self.logger.log_csv(job, TaskStates.NOP.value, self.__tick)
 
             self.__tick += 1

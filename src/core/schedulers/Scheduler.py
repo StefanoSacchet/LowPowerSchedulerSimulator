@@ -12,6 +12,7 @@ class Scheduler(ABC, BaseModel):
 
     ready_list: List[Job] = []  # list of jobs that are ready to be scheduled
     energy: int = 0  # energy available to the scheduler
+    prediction: List[int] = []  # list to store next n energy values
 
     @abstractmethod
     def init(self) -> None:
@@ -30,5 +31,5 @@ class Scheduler(ABC, BaseModel):
         pass
 
     @abstractmethod
-    def schedule(self) -> Job:
+    def schedule(self, current_tick: int) -> Job:
         pass

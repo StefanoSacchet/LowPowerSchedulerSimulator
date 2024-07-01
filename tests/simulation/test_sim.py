@@ -9,6 +9,7 @@ from src.core.tasks.Task import Task
 from src.config.Config import ConfigParams, DirNames, FileNames
 from src.core.EnergyTrace import EnergyTrace
 from src.config.Config import TaskStates
+from src.core.schedulers.EDF import EDF
 
 """
 ALL TESTS ARE BASED ON THE EDF SCHEDULER
@@ -17,7 +18,10 @@ ALL TESTS ARE BASED ON THE EDF SCHEDULER
 
 @pytest.fixture
 def task_list_1() -> List[Task]:
-    with open(DirNames.SIMULATION_PARAMS.value + "task_set_1.json", "r") as f:
+    with open(
+        DirNames.SIMULATION_PARAMS.value + DirNames.NORMAL.value + "task_set_1.json",
+        "r",
+    ) as f:
         task_list = json.load(f)
 
     return [Task(**task) for task in task_list["task_set"]]
@@ -25,7 +29,10 @@ def task_list_1() -> List[Task]:
 
 @pytest.fixture
 def task_list_2() -> List[Task]:
-    with open(DirNames.SIMULATION_PARAMS.value + "task_set_2.json", "r") as f:
+    with open(
+        DirNames.SIMULATION_PARAMS.value + DirNames.NORMAL.value + "task_set_2.json",
+        "r",
+    ) as f:
         task_list = json.load(f)
 
     return [Task(**task) for task in task_list["task_set"]]
@@ -33,7 +40,10 @@ def task_list_2() -> List[Task]:
 
 @pytest.fixture
 def task_list_3() -> List[Task]:
-    with open(DirNames.SIMULATION_PARAMS.value + "task_set_3.json", "r") as f:
+    with open(
+        DirNames.SIMULATION_PARAMS.value + DirNames.NORMAL.value + "task_set_3.json",
+        "r",
+    ) as f:
         task_list = json.load(f)
 
     return [Task(**task) for task in task_list["task_set"]]
@@ -47,7 +57,10 @@ class TestSimulation1:
     def setup_method(self):
         EnergyTrace().generate_energy_trace(20, 20)
         self.configuration = Configuration()
-        self.configuration.set_task_list("./simulation_params/task_set_1.json")
+        self.configuration.set_scheduler(EDF())
+        self.configuration.set_task_list(
+            DirNames.SIMULATION_PARAMS.value + DirNames.NORMAL.value + "task_set_1.json"
+        )
         self.simulation = Simulation(self.configuration)
 
     def test_initialization(self, task_list_1: List[Task]):
@@ -57,6 +70,7 @@ class TestSimulation1:
         assert self.simulation.scheduler.ready_list == []
         assert self.simulation.task_list == task_list_1
         assert self.simulation.energy_trace == EnergyTrace().get_energy_trace()
+        assert isinstance(self.simulation.scheduler, EDF)
 
     def test_task_set_1(self):
         self.simulation.run()
@@ -135,7 +149,10 @@ class TestSimulation2:
     def setup_method(self):
         EnergyTrace().generate_energy_trace(20, 150)
         self.configuration = Configuration()
-        self.configuration.set_task_list("./simulation_params/task_set_2.json")
+        self.configuration.set_scheduler(EDF())
+        self.configuration.set_task_list(
+            DirNames.SIMULATION_PARAMS.value + DirNames.NORMAL.value + "task_set_2.json"
+        )
         self.simulation = Simulation(self.configuration)
 
     def test_initialization(self, task_list_2: List[Task]):
@@ -145,6 +162,7 @@ class TestSimulation2:
         assert self.simulation.scheduler.ready_list == []
         assert self.simulation.task_list == task_list_2
         assert self.simulation.energy_trace == EnergyTrace().get_energy_trace()
+        assert isinstance(self.simulation.scheduler, EDF)
 
     def test_task_set_2(self):
         self.simulation.run()
@@ -201,6 +219,7 @@ class TestSimulation2:
         assert len(res) == 0
 
 
+# @pytest.mark.skip()
 class TestSimulation3:
     configuration: Configuration
     simulation: Simulation
@@ -208,7 +227,10 @@ class TestSimulation3:
     def setup_method(self):
         EnergyTrace().generate_energy_trace(20, 25)
         self.configuration = Configuration()
-        self.configuration.set_task_list("./simulation_params/task_set_3.json")
+        self.configuration.set_scheduler(EDF())
+        self.configuration.set_task_list(
+            DirNames.SIMULATION_PARAMS.value + DirNames.NORMAL.value + "task_set_3.json"
+        )
         self.simulation = Simulation(self.configuration)
 
     def test_initialization(self, task_list_3: List[Task]):
@@ -218,6 +240,7 @@ class TestSimulation3:
         assert self.simulation.scheduler.ready_list == []
         assert self.simulation.task_list == task_list_3
         assert self.simulation.energy_trace == EnergyTrace().get_energy_trace()
+        assert isinstance(self.simulation.scheduler, EDF)
 
     def test_task_set_3(self):
         self.simulation.run()

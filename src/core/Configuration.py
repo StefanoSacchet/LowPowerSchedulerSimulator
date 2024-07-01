@@ -7,7 +7,7 @@ from src.core.tasks.Task import Task
 from src.config.Config import DirNames, FileNames, ConfigParams
 from src.core.Capacitor import Capacitor
 from src.core.EnergyTrace import EnergyTrace
-from src.core.schedulers.EDF import EDF
+from src.core.schedulers.EDFLowPower import EDFLowPower
 from src.logger.Logger import Logger
 
 
@@ -15,6 +15,8 @@ class Configuration(BaseModel):
     """Configuration params for simulation"""
 
     tick_duration: int  # duration of a tick in ms
+    prediction_len: int  # how many energy values the scheduler sees in the future
+
     capacitor: Capacitor = None
     scheduler: Scheduler = None
     task_list: List[Task] = []
@@ -24,9 +26,11 @@ class Configuration(BaseModel):
     def __init__(
         self,
         tick_duration: int = 1,
+        prediction_len: int = 3,
     ):
         super().__init__(
             tick_duration=tick_duration,
+            prediction_len=prediction_len,
         )
         # default setup
         self.set_capacitor()
@@ -47,7 +51,7 @@ class Configuration(BaseModel):
 
     def set_scheduler(self, scheduler: Scheduler = None) -> None:
         if scheduler is None:
-            self.scheduler = EDF()
+            self.scheduler = EDFLowPower()
         else:
             assert isinstance(scheduler, Scheduler)
             print("Using provided scheduler")
@@ -56,7 +60,10 @@ class Configuration(BaseModel):
     def set_task_list(self, path: str = None) -> None:
         if path is None:
             with open(
-                DirNames.SIMULATION_PARAMS.value + FileNames.TASK_SET.value, "r"
+                DirNames.SIMULATION_PARAMS.value
+                + DirNames.NORMAL.value
+                + FileNames.TASK_SET.value,
+                "r",
             ) as f:
                 task_list = json.load(f)
         else:

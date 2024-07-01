@@ -4,6 +4,8 @@ from enum import Enum
 class DirNames(Enum):
     RESULTS = "results/"
     SIMULATION_PARAMS = "simulation_params/"
+    NORMAL = "normal/"
+    LOW_POWER = "low_power/"
 
 
 class FileNames(Enum):
@@ -23,11 +25,12 @@ class TaskStates(Enum):
     EXECUTING = "EXECUTING"
     TERMINATED = "TERMINATED"
     MISSED_DEADLINE = "MISSED_DEADLINE"
+    NOP = "NOP"
 
 
 class ConfigParams(Enum):
     TICK_DURATION = 1
 
     # capacitor
-    ENERGY = 0
+    ENERGY = 100
     MAX_ENERGY = 100
