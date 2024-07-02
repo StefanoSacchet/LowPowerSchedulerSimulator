@@ -1,13 +1,19 @@
 from pydantic import BaseModel
 
+from src.config.Config import ConfigParams
+
 
 class Capacitor(BaseModel):
     """Model for MCU capacitor"""
 
-    energy: int = 0
-    max_energy: int = 100
+    energy: float
+    max_energy: int
 
-    def __init__(self, energy: int = 0, max_energy: int = 100):
+    def __init__(
+        self,
+        energy: float = ConfigParams.ENERGY.value,
+        max_energy: int = ConfigParams.MAX_ENERGY.value,
+    ):
         super().__init__(energy=energy, max_energy=max_energy)
         self.energy = energy
         self.max_energy = max_energy
@@ -17,7 +23,7 @@ class Capacitor(BaseModel):
         self.energy = min(self.max_energy, self.energy + energy_input)
 
     # Discharge energy from the capacitor if there is enough energy available
-    def discharge(self, energy_required: int) -> bool:
+    def discharge(self, energy_required: float) -> bool:
         if self.energy >= energy_required:
             self.energy -= energy_required
             return True

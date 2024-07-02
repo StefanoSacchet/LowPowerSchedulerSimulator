@@ -51,7 +51,9 @@ class Plot(BaseModel):
                     # Check if it's the last row or if the next row is not 'EXECUTING'
                     if (
                         i == len(task_data) - 1
-                        or task_data.iloc[i + 1]["state"] != "EXECUTING"
+                        or df.query(
+                            f'task_id == {task_id} and tick == {row["tick"] + 1} and state == "EXECUTING"'
+                        ).empty
                     ):
                         end_tick = row["tick"]
                         exec_blocks.append((start_tick, end_tick - start_tick + 1))

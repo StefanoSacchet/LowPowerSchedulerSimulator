@@ -15,7 +15,7 @@ class Scheduler(ABC, BaseModel):
     prediction: List[int] = []  # list to store next n energy values
 
     @abstractmethod
-    def init(self) -> None:
+    def init(self, energy: int, prediction: List[int]) -> None:
         pass
 
     @abstractmethod

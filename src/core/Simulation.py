@@ -54,7 +54,10 @@ class Simulation(BaseModel):
                 )
 
     def execute_job(self, job: Job) -> None:
-        if job.execute() and self.capacitor.discharge(job.energy_requirement):
+        # consumed energy per time unit by the job
+        energy_required = job.energy_requirement / job.wcet
+        # execute job and discharge capacitor
+        if job.execute() and self.capacitor.discharge(energy_required):
             self.logger.log_csv(job, TaskStates.EXECUTING.value, self.__tick)
             if job.is_complete():
                 job.is_active = False
@@ -65,22 +68,25 @@ class Simulation(BaseModel):
     def handle_missed_deadline(self) -> None:
         for job in self.job_list:
             if self.__tick >= job.deadline:
+                self.job_list.remove(job)
+                self.scheduler.on_terminate(job)
                 self.logger.log_csv(
                     job,
                     TaskStates.MISSED_DEADLINE.value,
                     self.__tick,
                 )
-                self.job_list.remove(job)
-                self.scheduler.on_terminate(job)
 
     def run(self):
         # initialize scheduler
-        self.scheduler.init()
+        self.scheduler.init(
+            self.capacitor.energy, self.energy_trace[: self.prediction_len]
+        )
 
         for i, energy_input in enumerate(self.energy_trace):
             # charge the capacitor
             self.capacitor.charge(energy_input)
-            # update scheduler with energy and next energy values
+
+            # update scheduler with current energy and next energy values
             next_n_energy = self.energy_trace[i + 1 : i + self.prediction_len + 1]
             self.scheduler.on_energy_update(self.capacitor.energy, next_n_energy)
 

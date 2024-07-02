@@ -15,8 +15,10 @@ class EDFLowPower(Scheduler):
         prediction: List[int] - list to store next n energy values
     """
 
-    def init(self) -> None:
+    def init(self, energy: int, prediction: List[int]) -> None:
         self.ready_list = []
+        self.energy = energy
+        self.prediction = prediction
 
     def on_activate(self, task: Job) -> None:
         self.ready_list.append(task)
@@ -37,12 +39,17 @@ class EDFLowPower(Scheduler):
         self.ready_list.sort(key=lambda x: x.deadline)
 
         for job in self.ready_list:
+            energy_required = job.energy_requirement / job.wcet * job.time_remaining
+            # check that energy is enough to execute a time unit of the job and
+            # current energy + prediction is enough to execute the entire job
             if (
-                job.energy_requirement <= self.energy
+                energy_required <= self.energy
+                and job.energy_requirement <= self.energy + sum(self.prediction)
                 and current_tick + job.time_remaining <= job.deadline
             ):
                 return job
-            else:
-                print("Job cannot be scheduled", current_tick)
+            # else:
+                # print(f"Job {job.name} cannot be scheduled", current_tick)
 
+        # print("No job can be scheduled", current_tick)
         return NOP()

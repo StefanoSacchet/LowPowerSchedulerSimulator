@@ -32,5 +32,5 @@ class ConfigParams(Enum):
     TICK_DURATION = 1
 
     # capacitor
-    ENERGY = 100
+    ENERGY = 100.0
     MAX_ENERGY = 100
