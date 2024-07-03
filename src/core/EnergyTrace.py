@@ -1,7 +1,8 @@
-from pydantic import BaseModel
+import os
 import random
 from typing import List
-import os
+
+from pydantic import BaseModel
 
 from src.config.Config import DirNames, FileNames
 
@@ -32,4 +33,5 @@ class EnergyTrace(BaseModel):
         ) as f:
             for line in f:
                 energy_trace.append(int(line))
+        return energy_trace
         return energy_trace

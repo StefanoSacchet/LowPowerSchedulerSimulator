@@ -1,14 +1,15 @@
-from pydantic import BaseModel
 from typing import List
 
+from pydantic import BaseModel
+
+from src.config.Config import TaskStates
 from src.core.Capacitor import Capacitor
-from src.core.tasks.Task import Task
-from src.core.tasks.Job import Job
-from src.core.tasks.NOP import NOP
 from src.core.Configuration import Configuration
 from src.core.schedulers.Scheduler import Scheduler
+from src.core.tasks.Job import Job
+from src.core.tasks.NOP import NOP
+from src.core.tasks.Task import Task
 from src.logger.Logger import Logger
-from src.config.Config import TaskStates
 
 
 class Simulation(BaseModel):
@@ -49,7 +50,7 @@ class Simulation(BaseModel):
                 self.scheduler.on_activate(job)
                 self.logger.log_csv(
                     job,
-                    TaskStates.ACTIVATED.value,
+                    TaskStates.ACTIVATED,
                     self.__tick,
                 )
 
@@ -58,12 +59,12 @@ class Simulation(BaseModel):
         energy_required = job.energy_requirement / job.wcet
         # execute job and discharge capacitor
         if job.execute() and self.capacitor.discharge(energy_required):
-            self.logger.log_csv(job, TaskStates.EXECUTING.value, self.__tick)
+            self.logger.log_csv(job, TaskStates.EXECUTING, self.__tick)
             if job.is_complete():
                 job.is_active = False
                 self.job_list.remove(job)
                 self.scheduler.on_terminate(job)
-                self.logger.log_csv(job, TaskStates.TERMINATED.value, self.__tick + 1)
+                self.logger.log_csv(job, TaskStates.TERMINATED, self.__tick + 1)
 
     def handle_missed_deadline(self) -> None:
         for job in self.job_list:
@@ -72,7 +73,7 @@ class Simulation(BaseModel):
                 self.scheduler.on_terminate(job)
                 self.logger.log_csv(
                     job,
-                    TaskStates.MISSED_DEADLINE.value,
+                    TaskStates.MISSED_DEADLINE,
                     self.__tick,
                 )
 
@@ -103,6 +104,6 @@ class Simulation(BaseModel):
             if not isinstance(job, NOP):
                 self.execute_job(job)
             else:
-                self.logger.log_csv(job, TaskStates.NOP.value, self.__tick)
+                self.logger.log_csv(job, TaskStates.NOP, self.__tick)
 
             self.__tick += 1

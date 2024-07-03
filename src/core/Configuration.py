@@ -1,13 +1,14 @@
-from pydantic import BaseModel
-from typing import List
 import json
+from typing import List, Optional
 
-from src.core.schedulers.Scheduler import Scheduler
-from src.core.tasks.Task import Task
-from src.config.Config import DirNames, FileNames, ConfigParams
+from pydantic import BaseModel
+
+from src.config.Config import ConfigParams, DirNames, FileNames
 from src.core.Capacitor import Capacitor
 from src.core.EnergyTrace import EnergyTrace
 from src.core.schedulers.EDFLowPower import EDFLowPower
+from src.core.schedulers.Scheduler import Scheduler
+from src.core.tasks.Task import Task
 from src.logger.Logger import Logger
 
 
@@ -17,11 +18,11 @@ class Configuration(BaseModel):
     tick_duration: int  # duration of a tick in ms
     prediction_len: int  # how many energy values the scheduler sees in the future
 
-    capacitor: Capacitor = None
-    scheduler: Scheduler = None
+    capacitor: Optional[Capacitor] = None
+    scheduler: Optional[Scheduler] = None
+    logger: Optional[Logger] = None
     task_list: List[Task] = []
     energy_trace: List[int] = []
-    logger: Logger = None
 
     def __init__(
         self,
@@ -35,11 +36,11 @@ class Configuration(BaseModel):
         # default setup
         self.set_capacitor()
         self.set_scheduler()
+        self.set_logger()
         self.set_task_list()
         self.set_energy_trace()
-        self.set_logger()
 
-    def set_capacitor(self, capacitor: Capacitor = None) -> None:
+    def set_capacitor(self, capacitor: Optional[Capacitor] = None) -> None:
         if capacitor is None:
             self.capacitor = Capacitor(
                 ConfigParams.ENERGY.value, ConfigParams.MAX_ENERGY.value
@@ -49,7 +50,7 @@ class Configuration(BaseModel):
             print("Using provided capacitor")
             self.capacitor = capacitor
 
-    def set_scheduler(self, scheduler: Scheduler = None) -> None:
+    def set_scheduler(self, scheduler: Optional[Scheduler] = None) -> None:
         if scheduler is None:
             self.scheduler = EDFLowPower()
         else:
@@ -57,7 +58,7 @@ class Configuration(BaseModel):
             print("Using provided scheduler")
             self.scheduler = scheduler
 
-    def set_task_list(self, path: str = None) -> None:
+    def set_task_list(self, path: Optional[str] = None) -> None:
         if path is None:
             with open(
                 DirNames.SIMULATION_PARAMS.value
@@ -73,14 +74,14 @@ class Configuration(BaseModel):
 
         self.task_list = [Task(**task) for task in task_list["task_set"]]
 
-    def set_energy_trace(self, energy_trace: List[int] = None) -> None:
+    def set_energy_trace(self, energy_trace: Optional[List[int]] = None) -> None:
         if energy_trace is None:
             self.energy_trace = EnergyTrace().get_energy_trace()
         else:
             print("Using provided energy trace")
             self.energy_trace = energy_trace
 
-    def set_logger(self, logger: Logger = None) -> None:
+    def set_logger(self, logger: Optional[Logger] = None) -> None:
         if logger is None:
             self.logger = Logger(DirNames.RESULTS.value, FileNames.RESULTS.value)
         else:

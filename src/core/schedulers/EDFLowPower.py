@@ -15,7 +15,7 @@ class EDFLowPower(Scheduler):
         prediction: List[int] - list to store next n energy values
     """
 
-    def init(self, energy: int, prediction: List[int]) -> None:
+    def init(self, energy: float, prediction: List[int]) -> None:
         self.ready_list = []
         self.energy = energy
         self.prediction = prediction
@@ -30,7 +30,7 @@ class EDFLowPower(Scheduler):
         self.energy = energy
         self.prediction = prediction
 
-    def schedule(self, current_tick: int) -> Job:
+    def schedule(self, current_tick: int) -> Job | NOP:
         # TODO heap q
 
         if len(self.ready_list) == 0:
@@ -49,7 +49,7 @@ class EDFLowPower(Scheduler):
             ):
                 return job
             # else:
-                # print(f"Job {job.name} cannot be scheduled", current_tick)
+            # print(f"Job {job.name} cannot be scheduled", current_tick)
 
         # print("No job can be scheduled", current_tick)
         return NOP()

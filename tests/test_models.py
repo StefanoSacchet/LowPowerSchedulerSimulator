@@ -1,5 +1,5 @@
-from src.core.tasks.Task import Task
 from src.core.Capacitor import Capacitor
+from src.core.tasks.Task import Task
 
 
 class TestTask:

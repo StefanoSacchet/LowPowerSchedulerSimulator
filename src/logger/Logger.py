@@ -1,8 +1,9 @@
-from pydantic import BaseModel
 import os
 
-from src.core.tasks.Job import Job
+from pydantic import BaseModel
+
 from src.config.Config import TaskStates
+from src.core.tasks.Job import Job
 
 
 class Logger(BaseModel):
@@ -22,4 +23,4 @@ class Logger(BaseModel):
 
     def log_csv(self, job: Job, state: TaskStates, tick: int) -> None:
         with open(os.path.join(self.log_dir, self.log_file), "a") as f:
-            f.write(f"{job.id},{job.task_id},{job.name},{state},{tick}\n")
+            f.write(f"{job.id},{job.task_id},{job.name},{state.value},{tick}\n")

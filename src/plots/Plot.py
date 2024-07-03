@@ -1,13 +1,14 @@
-from pydantic import BaseModel
-import matplotlib.pyplot as plt
-import matplotlib.patches as mpatches
 import os
 from itertools import cycle
-from typing import List, Dict
-import pandas as pd
+from typing import Dict, List
 
-from src.core.tasks.Task import Task
+import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
+import pandas as pd
+from pydantic import BaseModel
+
 from src.config.Config import DirNames, FileNames
+from src.core.tasks.Task import Task
 
 
 class Plot(BaseModel):
@@ -18,11 +19,11 @@ class Plot(BaseModel):
 
     def __init__(self, task_list: List[Task]):
         super().__init__(task_list=task_list)
-        colors = cycle(plt.cm.tab10.colors)  # Use a predefined colormap
+        colors = cycle(plt.cm.tab10.colors)  # type: ignore # Use a predefined colormap
         for task in task_list:
             self.task_color_map[task.id] = next(colors)
 
-    def plot_results(self, time_range: int = None, save: bool = False) -> None:
+    def plot_results(self, time_range: int | None = None, save: bool = False) -> None:
         # Read the CSV file
         df = pd.read_csv(os.path.join(DirNames.RESULTS.value, FileNames.RESULTS.value))
 
@@ -180,4 +181,5 @@ class Plot(BaseModel):
             )
 
         # Show plot
+        plt.show(block=False)
         plt.show(block=False)

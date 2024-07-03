@@ -1,12 +1,13 @@
-import pytest
-from typing import List
 import json
+from typing import List
 
-from src.core.EnergyTrace import EnergyTrace
-from src.core.Simulation import Simulation
-from src.core.Configuration import Configuration
-from src.core.schedulers.EDFLowPower import EDFLowPower
+import pytest
+
 from src.config.Config import ConfigParams, DirNames
+from src.core.Configuration import Configuration
+from src.core.EnergyTrace import EnergyTrace
+from src.core.schedulers.EDFLowPower import EDFLowPower
+from src.core.Simulation import Simulation
 from src.core.tasks.Task import Task
 
 
@@ -43,4 +44,5 @@ class TestSimLowPower:
         assert isinstance(self.simulation.scheduler, EDFLowPower)
 
     def test_task_set_2(self):
+        pass
         pass

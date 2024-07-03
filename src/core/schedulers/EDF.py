@@ -28,7 +28,7 @@ class EDF(Scheduler):
         self.energy = energy
         self.prediction = prediction
 
-    def schedule(self, current_tick: int) -> Job:
+    def schedule(self, current_tick: int) -> Job | NOP:
         # TODO heap q
 
         if len(self.ready_list) == 0:

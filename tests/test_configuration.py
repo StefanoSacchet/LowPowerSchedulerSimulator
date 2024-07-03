@@ -1,14 +1,14 @@
-import pytest
 import json
 from typing import List
 
-from src.core.Simulation import Simulation
-from src.core.Configuration import Configuration
-from src.core.tasks.Task import Task
-from src.config.Config import ConfigParams
-from src.config.Config import DirNames, FileNames
-from src.core.EnergyTrace import EnergyTrace
+import pytest
+
+from src.config.Config import ConfigParams, DirNames, FileNames
 from src.core.Capacitor import Capacitor
+from src.core.Configuration import Configuration
+from src.core.EnergyTrace import EnergyTrace
+from src.core.Simulation import Simulation
+from src.core.tasks.Task import Task
 
 
 @pytest.fixture

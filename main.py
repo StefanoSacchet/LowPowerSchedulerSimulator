@@ -1,9 +1,9 @@
-from src.core.Simulation import Simulation
-from src.core.Configuration import Configuration
-from src.plots.Plot import Plot
-from src.core.EnergyTrace import EnergyTrace
 from src.config.Config import DirNames
 from src.core.Capacitor import Capacitor
+from src.core.Configuration import Configuration
+from src.core.EnergyTrace import EnergyTrace
+from src.core.Simulation import Simulation
+from src.plots.Plot import Plot
 
 
 def run_task_set_1() -> Simulation:
@@ -73,3 +73,4 @@ if __name__ == "__main__":
     plot.plot_results(sim.num_ticks, save=True)
 
     input("Press Enter to close...")
+ 
