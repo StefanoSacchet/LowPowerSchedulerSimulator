@@ -84,6 +84,8 @@ class Simulation(BaseModel):
         )
 
         for i, energy_input in enumerate(self.energy_trace):
+            self.logger.log_energy_level(self.capacitor.energy, self.__tick)
+
             # charge the capacitor
             self.capacitor.charge(energy_input)
 

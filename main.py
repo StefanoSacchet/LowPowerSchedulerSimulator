@@ -71,6 +71,7 @@ if __name__ == "__main__":
     plot.plot_task_set(sim.num_ticks, save=True)
     # plot results
     plot.plot_results(sim.num_ticks, save=True)
+    # plot energy level
+    plot.plot_energy_level(save=True)
 
     input("Press Enter to close...")
- 

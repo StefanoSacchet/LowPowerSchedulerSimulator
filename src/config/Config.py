@@ -13,7 +13,9 @@ class FileNames(Enum):
     TASK_SET = "task_set_1.json"
     PLOT_TASK_SET = "plot_task_set.png"
     PLOT_RESULTS = "plot_results.png"
+    PLOT_ENERGY_LEVEL = "plot_energy_level.png"
     RESULTS = "results.csv"
+    ENERGY_LEVEL = "energy_level.csv"
 
 
 class Schedulers(Enum):

@@ -182,4 +182,38 @@ class Plot(BaseModel):
 
         # Show plot
         plt.show(block=False)
-        plt.show(block=False)
+
+    def plot_energy_level(self, save: bool = False):
+        # Read the CSV file
+        df = pd.read_csv(
+            os.path.join(DirNames.RESULTS.value, FileNames.ENERGY_LEVEL.value)
+        )
+
+        # Plot the energy levels against the ticks
+        plt.figure(figsize=(10, 6))
+        plt.plot(
+            df["tick"],
+            df["energy"],
+            marker="o",
+            linestyle="-",
+            color="b",
+            label="Energy Level",
+        )
+
+        # Add labels and title
+        plt.xlabel("Tick")
+        plt.ylabel("Energy Level")
+        plt.title("Energy Level Over Time")
+        plt.grid(True)
+        plt.legend()
+
+        if save:
+            # Save plot
+            if not os.path.exists(DirNames.RESULTS.value):
+                os.makedirs(DirNames.RESULTS.value)
+            plt.savefig(
+                os.path.join(DirNames.RESULTS.value, FileNames.PLOT_ENERGY_LEVEL.value)
+            )
+
+        # Show the plot
+        plt.show()

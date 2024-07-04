@@ -83,7 +83,11 @@ class Configuration(BaseModel):
 
     def set_logger(self, logger: Optional[Logger] = None) -> None:
         if logger is None:
-            self.logger = Logger(DirNames.RESULTS.value, FileNames.RESULTS.value)
+            self.logger = Logger(
+                DirNames.RESULTS.value,
+                FileNames.RESULTS.value,
+                FileNames.ENERGY_LEVEL.value,
+            )
         else:
             assert isinstance(logger, Logger)
             print("Using provided logger")
