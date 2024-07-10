@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from src.core.tasks.Job import Job
 
@@ -22,6 +22,50 @@ class Task(BaseModel):
     description: Optional[str]
 
     next_activation: int
+
+    class Config:
+        validate_assignment = True
+
+    @field_validator("id")
+    def check_id(cls, value: int):
+        assert value >= 0, "ID must be greater than or equal to 0"
+        return value
+
+    @field_validator("name")
+    def check_name(cls, value: str):
+        assert len(value) > 0, "Name must not be empty"
+        return value
+
+    @field_validator("period")
+    def check_period(cls, value: int):
+        assert value > 0, "Period must be greater than 0"
+        return value
+
+    @field_validator("activation_date")
+    def check_activation_date(cls, value: int):
+        assert value >= 0, "Activation date must be greater than or equal to 0"
+        return value
+
+    @field_validator("deadline")
+    def check_deadline(cls, value: int):
+        assert value > 0, "Deadline must be greater than 0"
+        return value
+
+    @field_validator("wcet")
+    def check_wcet(cls, value: int):
+        assert value > 0, "WCET must be greater than 0"
+        return value
+
+    @field_validator("energy_requirement")
+    def check_energy_requirement(cls, value: int):
+        assert value >= 0, "Energy requirement must be greater or equal to 0"
+        return value
+
+    @field_validator("priority")
+    def check_priority(cls, value: Optional[int]):
+        if value is not None:
+            assert value >= 0, "Priority must be greater than or equal to 0"
+        return value
 
     def __init__(
         self,

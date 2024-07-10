@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from src.core.tasks.Job import Job
 
@@ -14,6 +14,14 @@ class Scheduler(ABC, BaseModel):
     ready_list: List[Job] = []  # list of jobs that are ready to be scheduled
     energy: float = 0  # energy available to the scheduler
     prediction: List[int] = []  # list to store next n energy values
+
+    class Config:
+        validate_assignment = True
+
+    @field_validator("energy")
+    def check_energy(cls, value: float):
+        assert value >= 0, "Energy must be greater than or equal to 0"
+        return value
 
     @abstractmethod
     def init(self, energy: float, prediction: List[int]) -> None:

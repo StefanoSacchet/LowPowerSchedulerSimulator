@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from src.config.Config import TaskStates
 from src.core.Capacitor import Capacitor
@@ -15,7 +15,7 @@ from src.logger.Logger import Logger
 class Simulation(BaseModel):
     """Model to simulate task scheduling"""
 
-    __tick: int = 0  # current tick
+    _tick: int = 0  # current tick
 
     tick_duration: int  # duration of a tick in ms
     num_ticks: int  # simulation duration
@@ -27,7 +27,20 @@ class Simulation(BaseModel):
     prediction_len: int  # how many energy values the scheduler sees in the future
 
     job_list: List[Job] = []  # list to store active jobs
-    next_job_id: int = 1  # counter for job IDs
+    next_job_id: int = 1  # counter that gives jobs their ID
+
+    class Config:
+        validate_assignment = True
+
+    @field_validator("tick_duration")
+    def check_tick_duration(cls, value: int):
+        assert value > 0, "Tick duration must be greater than 0"
+        return value
+
+    @field_validator("num_ticks")
+    def check_num_ticks(cls, value: int):
+        assert value > 0, "Number of ticks must be greater than 0"
+        return value
 
     def __init__(self, configuration: Configuration):
         super().__init__(
@@ -43,15 +56,15 @@ class Simulation(BaseModel):
 
     def activate_jobs(self) -> None:
         for task in self.task_list:
-            if task.is_ready(self.__tick):
-                job = task.generate_job(self.next_job_id, self.__tick)
+            if task.is_ready(self._tick):
+                job = task.generate_job(self.next_job_id, self._tick)
                 self.next_job_id += 1
                 self.job_list.append(job)
                 self.scheduler.on_activate(job)
                 self.logger.log_csv(
                     job,
                     TaskStates.ACTIVATED,
-                    self.__tick,
+                    self._tick,
                 )
 
     def execute_job(self, job: Job) -> None:
@@ -59,22 +72,22 @@ class Simulation(BaseModel):
         energy_required = job.energy_requirement / job.wcet
         # execute job and discharge capacitor
         if job.execute() and self.capacitor.discharge(energy_required):
-            self.logger.log_csv(job, TaskStates.EXECUTING, self.__tick)
+            self.logger.log_csv(job, TaskStates.EXECUTING, self._tick)
             if job.is_complete():
                 job.is_active = False
                 self.job_list.remove(job)
                 self.scheduler.on_terminate(job)
-                self.logger.log_csv(job, TaskStates.TERMINATED, self.__tick + 1)
+                self.logger.log_csv(job, TaskStates.TERMINATED, self._tick + 1)
 
     def handle_missed_deadline(self) -> None:
         for job in self.job_list:
-            if self.__tick >= job.deadline:
+            if self._tick >= job.deadline:
                 self.job_list.remove(job)
                 self.scheduler.on_terminate(job)
                 self.logger.log_csv(
                     job,
                     TaskStates.MISSED_DEADLINE,
-                    self.__tick,
+                    self._tick,
                 )
 
     def run(self):
@@ -84,7 +97,7 @@ class Simulation(BaseModel):
         )
 
         for i, energy_input in enumerate(self.energy_trace):
-            self.logger.log_energy_level(self.capacitor.energy, self.__tick)
+            self.logger.log_energy_level(self.capacitor.energy, self._tick)
 
             # charge the capacitor
             self.capacitor.charge(energy_input)
@@ -100,12 +113,12 @@ class Simulation(BaseModel):
             self.activate_jobs()
 
             # call scheduler to choose job
-            job = self.scheduler.schedule(self.__tick)
+            job = self.scheduler.schedule(self._tick)
 
             # execute job
             if not isinstance(job, NOP):
                 self.execute_job(job)
             else:
-                self.logger.log_csv(job, TaskStates.NOP, self.__tick)
+                self.logger.log_csv(job, TaskStates.NOP, self._tick)
 
-            self.__tick += 1
+            self._tick += 1

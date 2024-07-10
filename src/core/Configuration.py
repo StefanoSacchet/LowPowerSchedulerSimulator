@@ -1,7 +1,7 @@
 import json
 from typing import List, Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 from src.config.Config import ConfigParams, DirNames, FileNames
 from src.core.Capacitor import Capacitor
@@ -23,6 +23,29 @@ class Configuration(BaseModel):
     logger: Optional[Logger] = None
     task_list: List[Task] = []
     energy_trace: List[int] = []
+
+    class Config:
+        validate_assignment = True
+
+    @field_validator("tick_duration")
+    def check_tick_duration(cls, value: int):
+        assert value > 0, "Tick duration must be greater than 0"
+        return value
+
+    @field_validator("prediction_len")
+    def check_prediction_len(cls, value: int):
+        assert value >= 0, "Prediction length must be greater or equal than 0"
+        return value
+
+    @field_validator("task_list")
+    def check_task_list(cls, value: List[Task]):
+        assert len(value) > 0, "Task list must not be empty"
+        return value
+
+    @field_validator("energy_trace")
+    def check_energy_trace(cls, value: List[int]):
+        assert len(value) > 0, "Energy trace must not be empty"
+        return value
 
     def __init__(
         self,

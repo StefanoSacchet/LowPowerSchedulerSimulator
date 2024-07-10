@@ -34,4 +34,3 @@ class EnergyTrace(BaseModel):
             for line in f:
                 energy_trace.append(int(line))
         return energy_trace
-        return energy_trace

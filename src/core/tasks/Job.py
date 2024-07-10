@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class Job(BaseModel):
@@ -16,6 +16,36 @@ class Job(BaseModel):
     time_remaining: int
 
     is_active: bool = False
+
+    @field_validator("id")
+    def check_id(cls, value: int):
+        assert value >= 0, "ID must be greater than or equal to 0"
+        return value
+
+    @field_validator("task_id")
+    def check_task_id(cls, value: int):
+        assert value >= 0, "Task ID must be greater than or equal to 0"
+        return value
+
+    @field_validator("name")
+    def check_name(cls, value: str):
+        assert len(value) > 0, "Name must not be empty"
+        return value
+
+    @field_validator("deadline")
+    def check_deadline(cls, value: int):
+        assert value > 0, "Deadline must be greater than 0"
+        return value
+
+    @field_validator("wcet")
+    def check_wcet(cls, value: int):
+        assert value > 0, "WCET must be greater than 0"
+        return value
+
+    @field_validator("energy_requirement")
+    def check_energy_requirement(cls, value: int):
+        assert value >= 0, "Energy requirement must be greater than or equal to 0"
+        return value
 
     def __init__(
         self,

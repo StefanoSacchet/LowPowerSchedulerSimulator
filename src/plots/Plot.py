@@ -216,4 +216,4 @@ class Plot(BaseModel):
             )
 
         # Show the plot
-        plt.show()
+        plt.show(block=False)
