@@ -6,8 +6,8 @@ from pydantic import BaseModel, field_validator
 from src.config.Config import ConfigParams, DirNames, FileNames
 from src.core.Capacitor import Capacitor
 from src.core.EnergyTrace import EnergyTrace
-from src.core.schedulers.EDFLowPower import EDFLowPower
 from src.core.schedulers.Scheduler import Scheduler
+from src.core.schedulers.Celebi import Celebi
 from src.core.tasks.Task import Task
 from src.logger.Logger import Logger
 
@@ -75,7 +75,7 @@ class Configuration(BaseModel):
 
     def set_scheduler(self, scheduler: Optional[Scheduler] = None) -> None:
         if scheduler is None:
-            self.scheduler = EDFLowPower()
+            self.scheduler = Celebi()
         else:
             assert isinstance(scheduler, Scheduler)
             print("Using provided scheduler")
