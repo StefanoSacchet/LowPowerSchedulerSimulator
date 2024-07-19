@@ -71,13 +71,15 @@ class Simulation(BaseModel):
         # consumed energy per time unit by the job
         energy_required = job.energy_requirement / job.wcet
         # execute job and discharge capacitor
-        if job.execute() and self.capacitor.discharge(energy_required):
+        if self.capacitor.discharge(energy_required) and job.execute():
             self.logger.log_csv(job, TaskStates.EXECUTING, self._tick)
             if job.is_complete():
                 job.is_active = False
                 self.job_list.remove(job)
                 self.scheduler.on_terminate(job)
                 self.logger.log_csv(job, TaskStates.TERMINATED, self._tick + 1)
+        else:
+            print("Energy not sufficient to execute job", job)
 
     def handle_missed_deadline(self) -> None:
         for job in self.job_list:
@@ -97,6 +99,7 @@ class Simulation(BaseModel):
         )
 
         for i, energy_input in enumerate(self.energy_trace):
+
             self.logger.log_energy_level(self.capacitor.energy, self._tick)
 
             # charge the capacitor

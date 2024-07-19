@@ -15,7 +15,7 @@ class Celebi(Scheduler):
         prediction: List[int] - list to store next n energy values
     """
 
-    scheduled_jobs: Dict[int, Job] = {}
+    scheduled_jobs_map: Dict[int, Job] = {}
     unscheduled_jobs: List[Job] = []
     occupied_ticks: Set[int] = set()  # Track occupied time slots
 
@@ -61,19 +61,21 @@ class Celebi(Scheduler):
 
         # Schedule each job as late as possible without overlapping
         for job in self.ready_list:
+            # if job is already scheduled, skip
+            if job in self.scheduled_jobs_map.values():
+                continue
             latest_start_tick = job.deadline - job.wcet
             start_tick = self.find_non_overlapping_start_tick(
                 latest_start_tick, job.wcet, current_tick
             )
             if start_tick is not None:
                 for i in range(start_tick, start_tick + job.wcet):
-                    self.scheduled_jobs[i] = job
+                    self.scheduled_jobs_map[i] = job
                 self.mark_ticks_as_occupied(start_tick, job.wcet)
-                # return job
 
         # if at current tick there is a scheduled job, return it
-        if current_tick in self.scheduled_jobs:
-            job = self.scheduled_jobs.pop(current_tick)
+        if current_tick in self.scheduled_jobs_map:
+            job = self.scheduled_jobs_map.pop(current_tick)
             return job
 
         return NOP()
