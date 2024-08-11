@@ -1,3 +1,5 @@
+from src.core.schedulers.ALAP import ALAP
+from src.core.schedulers.RM import RM
 from src.config.Config import DirNames
 from src.core.Capacitor import Capacitor
 from src.core.Configuration import Configuration
@@ -11,11 +13,14 @@ def run_task_set_1() -> Simulation:
     # EnergyTrace().generate_energy_trace(5, 20)
 
     # setup configuration for simulation, in this case we are using default values
-    configuration = Configuration()
-    configuration.set_capacitor(Capacitor(energy=50, max_energy=100))
+    configuration = Configuration(prediction_len=1, charge_mutually_exclusive=True)
+    configuration.set_capacitor(Capacitor(energy=0, max_energy=100))
+    alap = ALAP()
+    rm = RM()
+    configuration.set_scheduler(rm)
 
     configuration.set_task_list(
-        DirNames.SIMULATION_PARAMS.value + DirNames.LOW_POWER.value + "task_set_1.json"
+        DirNames.SIMULATION_PARAMS.value + DirNames.LOW_POWER.value + "celebi.json"
     )
 
     # run simulation

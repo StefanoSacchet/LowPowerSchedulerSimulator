@@ -6,6 +6,7 @@ from src.config.Config import TaskStates
 from src.core.Capacitor import Capacitor
 from src.core.Configuration import Configuration
 from src.core.schedulers.Scheduler import Scheduler
+from src.core.tasks.Harvest import Harvest
 from src.core.tasks.Job import Job
 from src.core.tasks.NOP import NOP
 from src.core.tasks.Task import Task
@@ -25,6 +26,7 @@ class Simulation(BaseModel):
     scheduler: Scheduler
     logger: Logger
     prediction_len: int  # how many energy values the scheduler sees in the future
+    charge_mutually_exclusive: bool
 
     job_list: List[Job] = []  # list to store active jobs
     next_job_id: int = 1  # counter that gives jobs their ID
@@ -52,6 +54,7 @@ class Simulation(BaseModel):
             logger=configuration.logger,
             prediction_len=configuration.prediction_len,
             num_ticks=len(configuration.energy_trace),
+            charge_mutually_exclusive=configuration.charge_mutually_exclusive,
         )
 
     def activate_jobs(self) -> None:
@@ -99,14 +102,14 @@ class Simulation(BaseModel):
         )
 
         for i, energy_input in enumerate(self.energy_trace):
-
             self.logger.log_energy_level(self.capacitor.energy, self._tick)
 
-            # charge the capacitor
-            self.capacitor.charge(energy_input)
+            if not self.charge_mutually_exclusive:
+                # charge the capacitor
+                self.capacitor.charge(energy_input)
 
             # update scheduler with current energy and next energy values
-            next_n_energy = self.energy_trace[i + 1 : i + self.prediction_len + 1]
+            next_n_energy: List[int] = self.energy_trace[i : i + self.prediction_len]
             self.scheduler.on_energy_update(self.capacitor.energy, next_n_energy)
 
             # check if any job missed deadline
@@ -119,9 +122,14 @@ class Simulation(BaseModel):
             job = self.scheduler.schedule(self._tick)
 
             # execute job
-            if not isinstance(job, NOP):
+            if isinstance(job, Job):
                 self.execute_job(job)
-            else:
+            elif isinstance(job, Harvest):
+                self.capacitor.charge(energy_input)
+                # self.logger.log_csv(job, TaskStates.HARVEST, self._tick)
+            elif isinstance(job, NOP):
                 self.logger.log_csv(job, TaskStates.NOP, self._tick)
+            else:
+                raise ValueError(f"Unknown job type: {job}")
 
             self._tick += 1

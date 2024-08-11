@@ -17,6 +17,7 @@ class Configuration(BaseModel):
 
     tick_duration: int  # duration of a tick in ms
     prediction_len: int  # how many energy values the scheduler sees in the future
+    charge_mutually_exclusive: bool = False
 
     capacitor: Optional[Capacitor] = None
     scheduler: Optional[Scheduler] = None
@@ -51,10 +52,12 @@ class Configuration(BaseModel):
         self,
         tick_duration: int = 1,
         prediction_len: int = 3,
+        charge_mutually_exclusive: bool = False,
     ):
         super().__init__(
             tick_duration=tick_duration,
             prediction_len=prediction_len,
+            charge_mutually_exclusive=charge_mutually_exclusive,
         )
         # default setup
         self.set_capacitor()

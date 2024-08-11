@@ -1,7 +1,6 @@
-from pydantic import BaseModel
+from src.core.tasks.AbstractJob import AbstractJob
 
-
-class NOP(BaseModel):
+class NOP(AbstractJob):
     """
     NOP task when MCU can not do nothing
     """

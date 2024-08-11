@@ -7,7 +7,7 @@ from src.core.tasks.Job import Job
 from src.core.tasks.NOP import NOP
 
 
-class Celebi(Scheduler):
+class ALAP(Scheduler):
     """
     Earliest Deadline First scheduler
 
@@ -25,7 +25,7 @@ class Celebi(Scheduler):
     def init(self, energy: float, prediction: List[int]) -> None:
         self.ready_list = []
         self.energy = energy
-        # Celebi just knows the current energy value
+        # just knows the current energy value
         self.current_harvestable_energy = prediction
 
     def on_activate(self, job: Job) -> None:
@@ -36,7 +36,7 @@ class Celebi(Scheduler):
 
     def on_energy_update(self, energy: int, prediction: List[int]) -> None:
         self.energy = energy
-        # Celebi just knows the current energy value
+        # just knows the current energy value
         self.current_harvestable_energy = prediction
 
     # Find the latest start tick that does not overlap with other jobs
@@ -51,14 +51,12 @@ class Celebi(Scheduler):
                 return start_tick
         return None
 
-    # Mark the time slots as occupied.
+    # Mark the time slots as occupied
     def mark_ticks_as_occupied(self, start_tick: int, wcet: int) -> None:
         for tick in range(start_tick, start_tick + wcet):
             self.occupied_ticks.add(tick)
 
     def schedule(self, current_tick: int) -> AbstractJob:
-        # TODO heap q
-
         if len(self.ready_list) == 0:
             return NOP()
 
@@ -67,6 +65,7 @@ class Celebi(Scheduler):
             # if job is already scheduled, skip
             if job in self.scheduled_jobs_map.values():
                 continue
+
             latest_start_tick = job.deadline - job.wcet
             start_tick = self.find_non_overlapping_start_tick(
                 latest_start_tick, job.wcet, current_tick
@@ -85,16 +84,9 @@ class Celebi(Scheduler):
                 # TODO handle the case when energy is not enough so job is not executed --> change the map
                 self.scheduled_jobs_map.pop(current_tick)
                 return job
-        else:
-            # check if there is enough energy execute early a task
-            for job in self.ready_list:
-                energy_required = job.energy_requirement / job.wcet * job.time_remaining
-                if energy_required <= self.energy:
-                    # TODO remove job from map
-                    return job
-
-            # if no task can be executed, check if there is enough energy to harvest
-            if self.current_harvestable_energy[0] > 0:
-                return Harvest()
+            
+        # if no task can be executed, check if there is enough energy to harvest
+        if self.current_harvestable_energy[0] > 0:
+            return Harvest()
 
         return NOP()

@@ -101,6 +101,7 @@ class Task(BaseModel):
             task_id=self.id,
             name=self.name,
             deadline=tick + self.deadline,
+            period=self.period,
             wcet=self.wcet,
             energy_requirement=self.energy_requirement,
         )

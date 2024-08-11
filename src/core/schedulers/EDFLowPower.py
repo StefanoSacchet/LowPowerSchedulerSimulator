@@ -43,6 +43,7 @@ class EDFLowPower(Scheduler):
             # check that energy is enough to execute a time unit of the job and
             # current energy + prediction is enough to execute the entire job
             if (
+                #! probably a bug here
                 energy_required <= self.energy
                 and job.energy_requirement <= self.energy + sum(self.prediction)
                 and current_tick + job.time_remaining <= job.deadline
