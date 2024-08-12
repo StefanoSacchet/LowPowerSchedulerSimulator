@@ -1,6 +1,6 @@
 import os
 from itertools import cycle
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import matplotlib.patches as mpatches
 import matplotlib.pyplot as plt
@@ -23,7 +23,26 @@ class Plot(BaseModel):
         for task in task_list:
             self.task_color_map[task.id] = next(colors)
 
-    def plot_results(self, time_range: int | None = None, save: bool = False) -> None:
+    def save_plot(self, plt: plt, path: Optional[str], filename) -> None:  # type: ignore
+        if path is None:
+            return
+
+        if not os.path.exists(path):
+            os.makedirs(path)
+        plt.savefig(os.path.join(path, filename))
+
+    def show_plot(self, plt: plt, show: bool) -> None:  # type: ignore
+        if show:
+            plt.show(block=False)
+        else:
+            plt.close()
+
+    def plot_results(
+        self,
+        time_range: Optional[int] = None,
+        show: bool = False,
+        path: Optional[str] = None,
+    ) -> None:
         # Read the CSV file
         df = pd.read_csv(os.path.join(DirNames.RESULTS.value, FileNames.RESULTS.value))
 
@@ -115,18 +134,14 @@ class Plot(BaseModel):
         # Set title
         plt.title("Simulation Results")
 
-        if save:
-            # Save plot
-            if not os.path.exists(DirNames.RESULTS.value):
-                os.makedirs(DirNames.RESULTS.value)
-            plt.savefig(
-                os.path.join(DirNames.RESULTS.value, FileNames.PLOT_RESULTS.value)
-            )
+        self.save_plot(plt, path, FileNames.PLOT_RESULTS.value)
 
         # Show plot
-        plt.show(block=False)
+        self.show_plot(plt, show)
 
-    def plot_task_set(self, num_ticks: int, save: bool = False) -> None:
+    def plot_task_set(
+        self, num_ticks: int, show: bool = False, path: Optional[str] = None
+    ) -> None:
         time_range = num_ticks
 
         # Plot Gantt chart
@@ -172,18 +187,12 @@ class Plot(BaseModel):
         # Set title
         plt.title("Task Set Gantt Chart")
 
-        if save:
-            # Save plot
-            if not os.path.exists(DirNames.RESULTS.value):
-                os.makedirs(DirNames.RESULTS.value)
-            plt.savefig(
-                os.path.join(DirNames.RESULTS.value, FileNames.PLOT_TASK_SET.value)
-            )
+        self.save_plot(plt, path, FileNames.PLOT_TASK_SET.value)
 
         # Show plot
-        plt.show(block=False)
+        self.show_plot(plt, show)
 
-    def plot_energy_level(self, save: bool = False):
+    def plot_energy_level(self, show: bool = False, path: Optional[str] = None) -> None:
         # Read the CSV file
         df = pd.read_csv(
             os.path.join(DirNames.RESULTS.value, FileNames.ENERGY_LEVEL.value)
@@ -207,13 +216,7 @@ class Plot(BaseModel):
         plt.grid(True)
         plt.legend()
 
-        if save:
-            # Save plot
-            if not os.path.exists(DirNames.RESULTS.value):
-                os.makedirs(DirNames.RESULTS.value)
-            plt.savefig(
-                os.path.join(DirNames.RESULTS.value, FileNames.PLOT_ENERGY_LEVEL.value)
-            )
+        self.save_plot(plt, path, FileNames.PLOT_ENERGY_LEVEL.value)
 
-        # Show the plot
-        plt.show(block=False)
+        # Show plot
+        self.show_plot(plt, show)

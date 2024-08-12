@@ -19,6 +19,8 @@ __pycache__/
 
 # simulation results and params
 results/
+old_results/
 simulation_params/
+sim_config/
 
 todo.txt

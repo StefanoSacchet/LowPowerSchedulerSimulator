@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, field_validator
 
@@ -10,6 +10,8 @@ class Scheduler(ABC, BaseModel):
     """
     Abstract class for scheduler. To create a new scheduler, inherit from this class and implement the abstract methods
     """
+
+    name: str  # name of the scheduler
 
     ready_list: List[Job] = []  # list of jobs that are ready to be scheduled
     energy: float = 0  # energy available to the scheduler

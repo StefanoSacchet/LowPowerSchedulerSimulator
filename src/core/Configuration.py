@@ -6,8 +6,8 @@ from pydantic import BaseModel, field_validator
 from src.config.Config import ConfigParams, DirNames, FileNames
 from src.core.Capacitor import Capacitor
 from src.core.EnergyTrace import EnergyTrace
-from src.core.schedulers.Scheduler import Scheduler
 from src.core.schedulers.Celebi import Celebi
+from src.core.schedulers.Scheduler import Scheduler
 from src.core.tasks.Task import Task
 from src.logger.Logger import Logger
 
@@ -73,7 +73,7 @@ class Configuration(BaseModel):
             )
         else:
             assert isinstance(capacitor, Capacitor)
-            print("Using provided capacitor")
+            # print("ℹ️ Using provided capacitor", capacitor.__str__())
             self.capacitor = capacitor
 
     def set_scheduler(self, scheduler: Optional[Scheduler] = None) -> None:
@@ -81,31 +81,36 @@ class Configuration(BaseModel):
             self.scheduler = Celebi()
         else:
             assert isinstance(scheduler, Scheduler)
-            print("Using provided scheduler")
+            # print("ℹ️ Using provided scheduler", scheduler.name)
             self.scheduler = scheduler
 
     def set_task_list(self, path: Optional[str] = None) -> None:
         if path is None:
             with open(
                 DirNames.SIMULATION_PARAMS.value
-                + DirNames.NORMAL.value
-                + FileNames.TASK_SET.value,
+                + DirNames.LOW_POWER.value
+                + "celebi.json",
                 "r",
             ) as f:
                 task_list = json.load(f)
+                self.task_list = [Task(**task) for task in task_list["task_set"]]
         else:
-            print("Using provided task list", path.split("/")[-1])
+            # print("ℹ️ Using provided task list", path.split("/")[-1])
             with open(path, "r") as f:
                 task_list = json.load(f)
+                self.task_list = [Task(**task) for task in task_list]
 
-        self.task_list = [Task(**task) for task in task_list["task_set"]]
-
-    def set_energy_trace(self, energy_trace: Optional[List[int]] = None) -> None:
-        if energy_trace is None:
-            self.energy_trace = EnergyTrace().get_energy_trace()
+    def set_energy_trace(self, path: Optional[str] = None) -> None:
+        if path is None:
+            with open(
+                DirNames.SIMULATION_PARAMS.value + "energy_trace.log",
+                "r",
+            ) as f:
+                self.energy_trace = [int(line) for line in f]
         else:
-            print("Using provided energy trace")
-            self.energy_trace = energy_trace
+            # print("ℹ️ Using provided energy trace", path.split("/")[-1])
+            with open(path, "r") as f:
+                self.energy_trace = [int(line) for line in f]
 
     def set_logger(self, logger: Optional[Logger] = None) -> None:
         if logger is None:
@@ -116,5 +121,5 @@ class Configuration(BaseModel):
             )
         else:
             assert isinstance(logger, Logger)
-            print("Using provided logger")
+            # print("ℹ️ Using provided logger")
             self.logger = logger

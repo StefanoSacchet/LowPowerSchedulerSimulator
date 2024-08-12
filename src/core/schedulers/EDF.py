@@ -17,6 +17,8 @@ class EDF(Scheduler):
         prediction: List[int] - list to store next n energy values
     """
 
+    name: str = "EDF"
+
     scheduled_jobs_map: Dict[int, Job] = {}
     unscheduled_jobs: List[Job] = []
     occupied_ticks: Set[int] = set()  # Track occupied time slots

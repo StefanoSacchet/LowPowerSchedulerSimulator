@@ -4,13 +4,16 @@ from enum import Enum
 class DirNames(Enum):
     RESULTS = "results/"
     SIMULATION_PARAMS = "simulation_params/"
+    SIM_CONFIG = "sim_config/"
+    TASK_SETS = "task_sets/"
+    ENERGY_TRACES = "energy_traces/"
     NORMAL = "normal/"
     LOW_POWER = "low_power/"
 
 
 class FileNames(Enum):
-    ENERGY_TRACE = "energy_trace.log"
-    TASK_SET = "task_set_1.json"
+    ENERGY_TRACE = "energy_trace"
+    TASK_SET = "task_set"
     PLOT_TASK_SET = "plot_task_set.png"
     PLOT_RESULTS = "plot_results.png"
     PLOT_ENERGY_LEVEL = "plot_energy_level.png"

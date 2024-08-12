@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, PrivateAttr, field_validator
 
 from src.core.tasks.Job import Job
 
@@ -21,7 +21,8 @@ class Task(BaseModel):
     priority: Optional[int]
     description: Optional[str]
 
-    next_activation: int
+    # pydantic ignores attributes that starts with '_' when dumping
+    _next_activation: int = PrivateAttr()
 
     class Config:
         validate_assignment = True
@@ -89,11 +90,11 @@ class Task(BaseModel):
             energy_requirement=energy_requirement,
             priority=priority,
             description=description,
-            next_activation=activation_date,
         )
+        self._next_activation = activation_date
 
     def is_ready(self, tick: int) -> bool:
-        return tick >= self.next_activation
+        return tick >= self._next_activation
 
     def generate_job(self, job_id: int, tick: int) -> Job:
         job = Job(
@@ -105,5 +106,5 @@ class Task(BaseModel):
             wcet=self.wcet,
             energy_requirement=self.energy_requirement,
         )
-        self.next_activation += self.period
+        self._next_activation += self.period
         return job
