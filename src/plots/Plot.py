@@ -39,12 +39,13 @@ class Plot(BaseModel):
 
     def plot_results(
         self,
+        input_path: str,
+        output_path: Optional[str] = None,
         time_range: Optional[int] = None,
         show: bool = False,
-        path: Optional[str] = None,
     ) -> None:
         # Read the CSV file
-        df = pd.read_csv(os.path.join(DirNames.RESULTS.value, FileNames.RESULTS.value))
+        df = pd.read_csv(os.path.join(input_path, FileNames.RESULTS.value))
 
         # Extract unique tasks
         tasks = df["name"].unique()
@@ -134,13 +135,13 @@ class Plot(BaseModel):
         # Set title
         plt.title("Simulation Results")
 
-        self.save_plot(plt, path, FileNames.PLOT_RESULTS.value)
+        self.save_plot(plt, output_path, FileNames.PLOT_RESULTS.value)
 
         # Show plot
         self.show_plot(plt, show)
 
     def plot_task_set(
-        self, num_ticks: int, show: bool = False, path: Optional[str] = None
+        self, num_ticks: int, show: bool = False, output_path: Optional[str] = None
     ) -> None:
         time_range = num_ticks
 
@@ -187,15 +188,17 @@ class Plot(BaseModel):
         # Set title
         plt.title("Task Set Gantt Chart")
 
-        self.save_plot(plt, path, FileNames.PLOT_TASK_SET.value)
+        self.save_plot(plt, output_path, FileNames.PLOT_TASK_SET.value)
 
         # Show plot
         self.show_plot(plt, show)
 
-    def plot_energy_level(self, show: bool = False, path: Optional[str] = None) -> None:
+    def plot_energy_level(
+        self, input_path: str, output_path: Optional[str] = None, show: bool = False
+    ) -> None:
         # Read the CSV file
         df = pd.read_csv(
-            os.path.join(DirNames.RESULTS.value, FileNames.ENERGY_LEVEL.value)
+            os.path.join(input_path, FileNames.ENERGY_LEVEL.value)
         )
 
         # Plot the energy levels against the ticks
@@ -216,7 +219,7 @@ class Plot(BaseModel):
         plt.grid(True)
         plt.legend()
 
-        self.save_plot(plt, path, FileNames.PLOT_ENERGY_LEVEL.value)
+        self.save_plot(plt, output_path, FileNames.PLOT_ENERGY_LEVEL.value)
 
         # Show plot
         self.show_plot(plt, show)

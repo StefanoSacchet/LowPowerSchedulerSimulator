@@ -16,14 +16,16 @@ from src.logger.Logger import Logger
 from src.plots.Plot import Plot
 
 
-def plot_results(sim: Simulation, plot_path: str) -> None:
+def plot_results(sim: Simulation, input_path: str, output_path: str) -> None:
     plot = Plot(sim.task_list)
     # plot task set
-    plot.plot_task_set(sim.num_ticks, path=plot_path)
+    plot.plot_task_set(sim.num_ticks, output_path=output_path)
     # plot results
-    plot.plot_results(sim.num_ticks, path=plot_path)
+    plot.plot_results(
+        time_range=sim.num_ticks, input_path=input_path, output_path=output_path
+    )
     # plot energy level
-    plot.plot_energy_level(path=plot_path)
+    plot.plot_energy_level(input_path=input_path, output_path=output_path)
 
 
 def run_dataset() -> None:
@@ -80,23 +82,21 @@ def run_dataset() -> None:
             sim = Simulation(config)
             sim.run()
 
-            plot_results(sim, res_path)
+            plot_results(sim, input_path=res_path, output_path=res_path)
+
+        print(f"Finished simulation {task_set_filename}")
 
 
-def run_task_set_1() -> Simulation:
-    # generate energy trace
-    # EnergyTrace().generate_energy_trace(5, 20)
-
+def run_task_set_6() -> Simulation:
     # setup configuration for simulation, in this case we are using default values
     configuration = Configuration(prediction_len=1, charge_mutually_exclusive=True)
-    configuration.set_capacitor(Capacitor(energy=50, max_energy=100))
-    edf = EDF()
-    alap = ALAP()
-    rm = RM()
-    configuration.set_scheduler(edf)
-
+    configuration.set_capacitor(Capacitor(energy=100, max_energy=100))
+    configuration.set_scheduler(ALAP())
     configuration.set_task_list(
-        DirNames.SIMULATION_PARAMS.value + DirNames.LOW_POWER.value + "celebi.json"
+        DirNames.SIM_CONFIG.value + DirNames.TASK_SETS.value + "task_set_6.json"
+    )
+    configuration.set_energy_trace(
+        DirNames.SIM_CONFIG.value + DirNames.ENERGY_TRACES.value + "energy_trace_6.log"
     )
 
     # run simulation
@@ -107,7 +107,8 @@ def run_task_set_1() -> Simulation:
 
 
 if __name__ == "__main__":
-    # sim = run_task_set_1()
+    # sim = run_task_set_6()
+    # plot_results(sim, "results/")
 
     sim = run_dataset()
 
