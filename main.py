@@ -32,8 +32,10 @@ def run_dataset() -> None:
     if os.path.exists(DirNames.RESULTS.value):
         shutil.rmtree(DirNames.RESULTS.value)
 
+    capacitor = Capacitor(energy=100, max_energy=100)
+
     #! ALAP and Celebi are bugged
-    scheduler_list: List[Scheduler] = [EDF(), RM()]
+    scheduler_list: List[Scheduler] = [ALAP()]
 
     # for every task_set file in the task_sets directory
     for task_set_filename in os.listdir(
@@ -51,16 +53,6 @@ def run_dataset() -> None:
 
         config = Configuration(prediction_len=1, charge_mutually_exclusive=True)
 
-        config.set_capacitor(Capacitor(energy=100, max_energy=100))
-        config.set_energy_trace(
-            DirNames.SIM_CONFIG.value
-            + DirNames.ENERGY_TRACES.value
-            + energy_trace_filename
-        )
-        config.set_task_list(
-            DirNames.SIM_CONFIG.value + DirNames.TASK_SETS.value + task_set_filename
-        )
-
         # simulate each scheduler
         for scheduler in scheduler_list:
             res_path = (
@@ -70,6 +62,15 @@ def run_dataset() -> None:
                 + task_set_filename.replace(".json", "")
             )
 
+            config.set_capacitor(Capacitor(energy=100, max_energy=100))
+            config.set_energy_trace(
+                DirNames.SIM_CONFIG.value
+                + DirNames.ENERGY_TRACES.value
+                + energy_trace_filename
+            )
+            config.set_task_list(
+                DirNames.SIM_CONFIG.value + DirNames.TASK_SETS.value + task_set_filename
+            )
             config.set_scheduler(scheduler)
             # change logger to set the right path
             logger = Logger(

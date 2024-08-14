@@ -105,6 +105,7 @@ class Task(BaseModel):
             period=self.period,
             wcet=self.wcet,
             energy_requirement=self.energy_requirement,
+            is_active=True,
         )
         self._next_activation += self.period
         return job

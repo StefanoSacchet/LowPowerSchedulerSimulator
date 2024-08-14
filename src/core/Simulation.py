@@ -81,8 +81,6 @@ class Simulation(BaseModel):
                 self.job_list.remove(job)
                 self.scheduler.on_terminate(job)
                 self.logger.log_csv(job, TaskStates.TERMINATED, self._tick + 1)
-        else:
-            print("Energy not sufficient to execute job", job)
 
     def handle_missed_deadline(self) -> None:
         for job in self.job_list:

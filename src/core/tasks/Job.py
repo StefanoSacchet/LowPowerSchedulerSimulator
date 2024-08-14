@@ -2,6 +2,7 @@ from pydantic import BaseModel, field_validator
 
 from src.core.tasks.AbstractJob import AbstractJob
 
+
 class Job(AbstractJob, BaseModel):
     """
     Model for a job that is generated from a task
@@ -17,7 +18,7 @@ class Job(AbstractJob, BaseModel):
 
     time_remaining: int
 
-    is_active: bool = False
+    is_active: bool
 
     @field_validator("id")
     def check_id(cls, value: int):
@@ -38,7 +39,7 @@ class Job(AbstractJob, BaseModel):
     def check_deadline(cls, value: int):
         assert value > 0, "Deadline must be greater than 0"
         return value
-    
+
     @field_validator("period")
     def check_period(cls, value: int):
         assert value > 0, "Period must be greater than 0"
@@ -63,6 +64,7 @@ class Job(AbstractJob, BaseModel):
         period: int,
         wcet: int,
         energy_requirement: int,
+        is_active: bool,
     ):
         super().__init__(
             id=id,
@@ -73,6 +75,7 @@ class Job(AbstractJob, BaseModel):
             wcet=wcet,
             energy_requirement=energy_requirement,
             time_remaining=wcet,
+            is_active=is_active,
         )
 
     def execute(self) -> bool:
