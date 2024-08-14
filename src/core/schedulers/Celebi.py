@@ -26,6 +26,9 @@ class Celebi(Scheduler):
 
     def init(self, energy: float, prediction: List[int]) -> None:
         self.ready_list = []
+        self.scheduled_jobs_map = {}
+        self.occupied_ticks = set()
+
         self.energy = energy
         # Celebi just knows the current energy value
         self.current_harvestable_energy = prediction

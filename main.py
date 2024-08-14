@@ -32,10 +32,7 @@ def run_dataset() -> None:
     if os.path.exists(DirNames.RESULTS.value):
         shutil.rmtree(DirNames.RESULTS.value)
 
-    capacitor = Capacitor(energy=100, max_energy=100)
-
-    #! ALAP and Celebi are bugged
-    scheduler_list: List[Scheduler] = [ALAP()]
+    scheduler_list: List[Scheduler] = [ALAP(), Celebi(), EDF(), RM()]
 
     # for every task_set file in the task_sets directory
     for task_set_filename in os.listdir(
@@ -63,6 +60,7 @@ def run_dataset() -> None:
             )
 
             config.set_capacitor(Capacitor(energy=100, max_energy=100))
+            config.set_scheduler(scheduler)
             config.set_energy_trace(
                 DirNames.SIM_CONFIG.value
                 + DirNames.ENERGY_TRACES.value
@@ -71,7 +69,7 @@ def run_dataset() -> None:
             config.set_task_list(
                 DirNames.SIM_CONFIG.value + DirNames.TASK_SETS.value + task_set_filename
             )
-            config.set_scheduler(scheduler)
+
             # change logger to set the right path
             logger = Logger(
                 res_path,

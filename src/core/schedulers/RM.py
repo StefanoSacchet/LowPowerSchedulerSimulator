@@ -19,9 +19,6 @@ class RM(Scheduler):
 
     name: str = "RM"
 
-    scheduled_jobs_map: Dict[int, Job] = {}
-    unscheduled_jobs: List[Job] = []
-    occupied_ticks: Set[int] = set()  # Track occupied time slots
     current_harvestable_energy: List[int] = []
 
     def init(self, energy: float, prediction: List[int]) -> None:
