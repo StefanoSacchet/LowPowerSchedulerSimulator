@@ -42,6 +42,13 @@ class Generator(BaseModel):
             max_task_num=max_task_num,
         )
 
+    @staticmethod
+    def delete_dataset() -> None:
+        if os.path.exists(DirNames.SIM_CONFIG.value):
+            shutil.rmtree(DirNames.SIM_CONFIG.value)
+        else:
+            print(f"Dataset not found at {DirNames.SIM_CONFIG.value}")
+
     def generate_task_set(self) -> List[Task]:
         # Randomly select the number of tasks
         num_tasks = random.randint(self.min_task_num, self.max_task_num)
@@ -99,17 +106,14 @@ class Generator(BaseModel):
             ]
             self._energy_traces.append(energy_trace)
 
-    def save_dataset(self) -> None:
-        if os.path.exists(DirNames.SIM_CONFIG.value):
-            shutil.rmtree(DirNames.SIM_CONFIG.value)
-
-        os.makedirs(DirNames.SIM_CONFIG.value + DirNames.TASK_SETS.value)
-        os.makedirs(DirNames.SIM_CONFIG.value + DirNames.ENERGY_TRACES.value)
+    def save_dataset(self, path: str) -> None:
+        os.makedirs(os.path.join(path + DirNames.TASK_SETS.value))
+        os.makedirs(os.path.join(path + DirNames.ENERGY_TRACES.value))
 
         # Save task sets
         for i, task_set in enumerate(self._task_sets):
             with open(
-                f"{os.path.join(DirNames.SIM_CONFIG.value, DirNames.TASK_SETS.value)}{FileNames.TASK_SET.value}_{i + 1}.json",
+                f"{os.path.join(path, DirNames.TASK_SETS.value)}{FileNames.TASK_SET.value}_{i + 1}.json",
                 "w",
             ) as f:
                 f.write("[\n")
@@ -124,7 +128,7 @@ class Generator(BaseModel):
         # Save energy traces
         for i, energy_trace in enumerate(self._energy_traces):
             with open(
-                f"{os.path.join(DirNames.SIM_CONFIG.value, DirNames.ENERGY_TRACES.value)}{FileNames.ENERGY_TRACE.value}_{i + 1}.log",
+                f"{os.path.join(path, DirNames.ENERGY_TRACES.value)}{FileNames.ENERGY_TRACE.value}_{i + 1}.log",
                 "w",
             ) as f:
                 for energy in energy_trace:

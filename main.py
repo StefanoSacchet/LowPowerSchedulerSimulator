@@ -5,7 +5,6 @@ from typing import List
 from src.config.Config import DirNames, FileNames
 from src.core.Capacitor import Capacitor
 from src.core.Configuration import Configuration
-from src.core.EnergyTrace import EnergyTrace
 from src.core.schedulers.ALAP import ALAP
 from src.core.schedulers.Celebi import Celebi
 from src.core.schedulers.EDF import EDF
@@ -28,20 +27,17 @@ def plot_results(sim: Simulation, input_path: str, output_path: str) -> None:
     plot.plot_energy_level(input_path=input_path, output_path=output_path)
 
 
-def run_dataset() -> None:
-    if os.path.exists(DirNames.RESULTS.value):
-        shutil.rmtree(DirNames.RESULTS.value)
-
+def run_sim(input_path: str) -> None:
     scheduler_list: List[Scheduler] = [ALAP(), Celebi(), EDF(), RM()]
 
     # for every task_set file in the task_sets directory
     for task_set_filename in os.listdir(
-        DirNames.SIM_CONFIG.value + DirNames.TASK_SETS.value
+        os.path.join(input_path, DirNames.TASK_SETS.value)
     ):
         if not task_set_filename.endswith(".json"):
             raise ValueError("Invalid file format", task_set_filename)
 
-        print(f"Running simulation {task_set_filename}")
+        # print(f"Running simulation {task_set_filename}")
 
         # get the corresponding energy trace file
         energy_trace_filename = task_set_filename.replace(
@@ -52,22 +48,21 @@ def run_dataset() -> None:
 
         # simulate each scheduler
         for scheduler in scheduler_list:
-            res_path = (
-                DirNames.RESULTS.value
-                + scheduler.name
-                + "/"
-                + task_set_filename.replace(".json", "")
+            res_path = os.path.join(
+                input_path.replace(DirNames.SIM_CONFIG.value, DirNames.RESULTS.value),
+                scheduler.name,
+                task_set_filename.replace(".json", ""),
             )
 
             config.set_capacitor(Capacitor(energy=100, max_energy=100))
             config.set_scheduler(scheduler)
             config.set_energy_trace(
-                DirNames.SIM_CONFIG.value
-                + DirNames.ENERGY_TRACES.value
-                + energy_trace_filename
+                os.path.join(
+                    input_path, DirNames.ENERGY_TRACES.value, energy_trace_filename
+                )
             )
             config.set_task_list(
-                DirNames.SIM_CONFIG.value + DirNames.TASK_SETS.value + task_set_filename
+                os.path.join(input_path, DirNames.TASK_SETS.value, task_set_filename)
             )
 
             # change logger to set the right path
@@ -83,32 +78,40 @@ def run_dataset() -> None:
 
             plot_results(sim, input_path=res_path, output_path=res_path)
 
-        print(f"Finished simulation {task_set_filename}")
+
+def run_cpu_utilization() -> None:
+    for dir in os.listdir(os.path.join(DirNames.SIM_CONFIG.value, "cpu_utilization")):
+        print(f"  Running simulation for CPU utilization {dir}")
+        path = os.path.join(DirNames.SIM_CONFIG.value, "cpu_utilization", dir)
+        run_sim(path)
 
 
-def run_task_set_6() -> Simulation:
-    # setup configuration for simulation, in this case we are using default values
-    configuration = Configuration(prediction_len=1, charge_mutually_exclusive=True)
-    configuration.set_capacitor(Capacitor(energy=100, max_energy=100))
-    configuration.set_scheduler(ALAP())
-    configuration.set_task_list(
-        DirNames.SIM_CONFIG.value + DirNames.TASK_SETS.value + "task_set_6.json"
-    )
-    configuration.set_energy_trace(
-        DirNames.SIM_CONFIG.value + DirNames.ENERGY_TRACES.value + "energy_trace_6.log"
-    )
+def run_task_num() -> None:
+    for dir in os.listdir(os.path.join(DirNames.SIM_CONFIG.value, "task_num")):
+        print(f"  Running simulation for task number {dir}")
+        path = os.path.join(DirNames.SIM_CONFIG.value, "task_num", dir)
+        run_sim(path)
 
-    # run simulation
-    sim = Simulation(configuration)
-    sim.run()
 
-    return sim
+def run_period_variation() -> None:
+    for dir in os.listdir(os.path.join(DirNames.SIM_CONFIG.value, "period_variation")):
+        print(f"  Running simulation for period variation {dir}")
+        path = os.path.join(DirNames.SIM_CONFIG.value, "period_variation", dir)
+        run_sim(path)
+
+
+def run_dataset() -> None:
+    if os.path.exists(DirNames.RESULTS.value):
+        shutil.rmtree(DirNames.RESULTS.value)
+
+    print("Starting")
+
+    run_cpu_utilization()
+    run_task_num()
+    run_period_variation()
+
+    print("Finished!!")
 
 
 if __name__ == "__main__":
-    # sim = run_task_set_6()
-    # plot_results(sim, "results/")
-
-    sim = run_dataset()
-
-    input("Press Enter to close...")
+    run_dataset()
