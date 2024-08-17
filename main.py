@@ -12,7 +12,7 @@ from src.core.schedulers.RM import RM
 from src.core.schedulers.Scheduler import Scheduler
 from src.core.Simulation import Simulation
 from src.logger.Logger import Logger
-from src.plots.Plot import Plot
+from src.plotter.Plot import Plot
 
 
 def plot_results(sim: Simulation, input_path: str, output_path: str) -> None:

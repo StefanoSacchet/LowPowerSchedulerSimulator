@@ -9,6 +9,7 @@ class DirNames(Enum):
     ENERGY_TRACES = "energy_traces/"
     NORMAL = "normal/"
     LOW_POWER = "low_power/"
+    EVAL = "evaluation/"
 
 
 class FileNames(Enum):
