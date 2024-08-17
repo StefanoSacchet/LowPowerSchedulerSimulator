@@ -10,9 +10,9 @@ from src.core.tasks.Task import Task
 
 # Define the energy consumption levels
 ENERGY_CONSUMPTION_LEVELS = {
-    "level_1": 1,  # Low energy consumption rate (e.g., low power mode)
-    "level_2": 2,  # Medium energy consumption rate (e.g., active mode)
-    "level_3": 3,  # High energy consumption rate (e.g., with sensors)
+    "level_1": 3,  # Low energy consumption rate (e.g., low power mode)
+    "level_2": 4,  # Medium energy consumption rate (e.g., active mode)
+    "level_3": 5,  # High energy consumption rate (e.g., with sensors)
 }
 
 
