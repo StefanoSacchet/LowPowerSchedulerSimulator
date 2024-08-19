@@ -1,4 +1,6 @@
-from typing import Dict, List, Set
+from typing import Dict, List, Optional, Set
+
+from pydantic import BaseModel
 
 from src.core.schedulers.Scheduler import Scheduler
 from src.core.tasks.AbstractJob import AbstractJob
@@ -7,16 +9,7 @@ from src.core.tasks.Job import Job
 from src.core.tasks.NOP import NOP
 
 
-class Celebi(Scheduler):
-    """
-    Earliest Deadline First scheduler
-
-    Attributes:
-        ready_list: List[Job] - list of jobs that are ready to be scheduled
-        energy: int - energy of the capacitor
-        prediction: List[int] - list to store next n energy values
-    """
-
+class Celebi(Scheduler, BaseModel):
     name: str = "Celebi"
 
     scheduled_jobs_map: Dict[int, Job] = {}
@@ -27,6 +20,7 @@ class Celebi(Scheduler):
     def init(self, energy: float, prediction: List[int]) -> None:
         self.ready_list = []
         self.scheduled_jobs_map = {}
+        self.unscheduled_jobs = []
         self.occupied_ticks = set()
 
         self.energy = energy
@@ -47,7 +41,7 @@ class Celebi(Scheduler):
     # Find the latest start tick that does not overlap with other jobs
     def find_non_overlapping_start_tick(
         self, latest_start_tick: int, wcet: int, current_tick: int
-    ) -> int | None:
+    ) -> Optional[int]:
         for start_tick in range(latest_start_tick, current_tick, -1):
             if all(
                 tick not in self.occupied_ticks
@@ -62,16 +56,10 @@ class Celebi(Scheduler):
             self.occupied_ticks.add(tick)
 
     def schedule(self, current_tick: int) -> AbstractJob:
-        # TODO heap q
-
-        if len(self.ready_list) == 0:
-            return NOP()
-
-        # Schedule each job as late as possible without overlapping
+        # Step 1: Pre-schedule using ALAP
         for job in self.ready_list:
-            # if job is already scheduled, skip
             if job in self.scheduled_jobs_map.values():
-                continue
+                continue  # Skip already scheduled jobs
 
             latest_start_tick = job.deadline - job.wcet
             start_tick = self.find_non_overlapping_start_tick(
@@ -81,26 +69,31 @@ class Celebi(Scheduler):
                 for i in range(start_tick, start_tick + job.wcet):
                     self.scheduled_jobs_map[i] = job
                 self.mark_ticks_as_occupied(start_tick, job.wcet)
+            else:
+                self.unscheduled_jobs.append(job)
 
-        # if at current tick there is a scheduled job, return it
+        # Step 2: Execute scheduled jobs if possible
         if current_tick in self.scheduled_jobs_map:
-            # check if there is enough energy to execute the job
             job = self.scheduled_jobs_map[current_tick]
             energy_required = job.energy_requirement / job.wcet * job.time_remaining
             if energy_required <= self.energy:
-                # TODO handle the case when energy is not enough so job is not executed --> change the map
                 self.scheduled_jobs_map.pop(current_tick)
                 return job
-        else:
-            # if there is enough energy execute early a task
-            for job in self.ready_list:
-                energy_required = job.energy_requirement / job.wcet * job.time_remaining
-                if energy_required <= self.energy:
-                    # TODO remove job from map
+            else:
+                self.unscheduled_jobs.append(
+                    job
+                )  # Re-add to unscheduled jobs if energy is insufficient
+
+        # Step 3: Execute unscheduled jobs early if possible
+        for job in self.unscheduled_jobs:
+            energy_required = job.energy_requirement / job.wcet * job.time_remaining
+            if energy_required <= self.energy:
+                self.unscheduled_jobs.remove(job)
+                if current_tick < job.deadline:
                     return job
 
-        # if no task can be executed, check if there is enough energy to harvest
-        if self.current_harvestable_energy[0] > 0:
+        # Step 4: Harvest energy if no jobs can be executed and energy is harvestable
+        if self.current_harvestable_energy and self.current_harvestable_energy[0] > 0:
             return Harvest()
 
         return NOP()

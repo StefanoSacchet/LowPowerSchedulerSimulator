@@ -30,7 +30,7 @@ class Generator(BaseModel):
     def __init__(
         self,
         cpu_utilization: float,
-        min_period: int = 1,
+        min_period: int = 4,
         max_period: int = 600,
         min_task_num: int = 2,
         max_task_num: int = 10,
