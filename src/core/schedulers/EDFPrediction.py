@@ -1,11 +1,13 @@
 from typing import List
 
 from src.core.schedulers.Scheduler import Scheduler
+from src.core.tasks.AbstractJob import AbstractJob
+from src.core.tasks.Harvest import Harvest
 from src.core.tasks.Job import Job
 from src.core.tasks.NOP import NOP
 
 
-class EDFLowPower(Scheduler):
+class EDFPrediction(Scheduler):
     """
     Earliest Deadline First scheduler
 
@@ -15,22 +17,26 @@ class EDFLowPower(Scheduler):
         prediction: List[int] - list to store next n energy values
     """
 
+    name: str = "EDF_prediction"
+
+    current_harvestable_energy: List[int] = []
+
     def init(self, energy: float, prediction: List[int]) -> None:
         self.ready_list = []
         self.energy = energy
-        self.prediction = prediction
+        self.current_harvestable_energy = prediction
 
-    def on_activate(self, task: Job) -> None:
-        self.ready_list.append(task)
+    def on_activate(self, job: Job) -> None:
+        self.ready_list.append(job)
 
-    def on_terminate(self, task: Job) -> None:
-        self.ready_list.remove(task)
+    def on_terminate(self, job: Job) -> None:
+        self.ready_list.remove(job)
 
     def on_energy_update(self, energy: int, prediction: List[int]) -> None:
         self.energy = energy
-        self.prediction = prediction
+        self.current_harvestable_energy = prediction
 
-    def schedule(self, current_tick: int) -> Job | NOP:
+    def schedule(self, current_tick: int) -> AbstractJob:
         # TODO heap q
 
         if len(self.ready_list) == 0:
@@ -40,17 +46,11 @@ class EDFLowPower(Scheduler):
 
         for job in self.ready_list:
             energy_required = job.energy_requirement / job.wcet * job.time_remaining
-            # check that energy is enough to execute a time unit of the job and
-            # current energy + prediction is enough to execute the entire job
-            if (
-                #! probably a bug here
-                energy_required <= self.energy
-                and job.energy_requirement <= self.energy + sum(self.prediction)
-                and current_tick + job.time_remaining <= job.deadline
-            ):
+            if energy_required <= self.energy + sum(self.prediction):
                 return job
-            # else:
-            # print(f"Job {job.name} cannot be scheduled", current_tick)
 
-        # print("No job can be scheduled", current_tick)
+        # if no task can be executed, check if there is enough energy to harvest
+        if self.current_harvestable_energy[0] > 0:
+            return Harvest()
+
         return NOP()

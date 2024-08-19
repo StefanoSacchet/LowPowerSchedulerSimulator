@@ -2,6 +2,7 @@ import os
 import shutil
 from typing import List
 
+from src.core.schedulers.EDFPrediction import EDFPrediction
 from src.config.Config import DirNames, FileNames
 from src.core.Capacitor import Capacitor
 from src.core.Configuration import Configuration
@@ -28,7 +29,7 @@ def plot_results(sim: Simulation, input_path: str, output_path: str) -> None:
 
 
 def run_sim(input_path: str) -> None:
-    scheduler_list: List[Scheduler] = [ALAP(), Celebi(), EDF(), RM()]
+    scheduler_list: List[Scheduler] = [ALAP(), Celebi(), EDF(), EDFPrediction(), RM()]
 
     # for every task_set file in the task_sets directory
     for task_set_filename in os.listdir(
@@ -54,6 +55,8 @@ def run_sim(input_path: str) -> None:
                 task_set_filename.replace(".json", ""),
             )
 
+            if isinstance(scheduler, EDFPrediction):
+                config.prediction_len = 5
             config.set_capacitor(Capacitor(energy=100, max_energy=100))
             config.set_scheduler(scheduler)
             config.set_energy_trace(

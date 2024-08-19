@@ -6,7 +6,7 @@ import pytest
 from src.config.Config import ConfigParams, DirNames
 from src.core.Configuration import Configuration
 from src.core.EnergyTrace import EnergyTrace
-from src.core.schedulers.EDFLowPower import EDFLowPower
+from core.schedulers.EDFPrediction import EDFLowPower
 from src.core.Simulation import Simulation
 from src.core.tasks.Task import Task
 

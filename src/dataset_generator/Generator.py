@@ -1,6 +1,7 @@
 import os
 import random
 import shutil
+from ast import Raise
 from typing import List
 
 from pydantic import BaseModel
@@ -10,9 +11,9 @@ from src.core.tasks.Task import Task
 
 # Define the energy consumption levels
 ENERGY_CONSUMPTION_LEVELS = {
-    "level_1": 3,  # Low energy consumption rate (e.g., low power mode)
-    "level_2": 4,  # Medium energy consumption rate (e.g., active mode)
-    "level_3": 5,  # High energy consumption rate (e.g., with sensors)
+    "level_1": 6,  # Low energy consumption rate (e.g., low power mode)
+    "level_2": 8,  # Medium energy consumption rate (e.g., active mode)
+    "level_3": 10,  # High energy consumption rate (e.g., with sensors)
 }
 
 
@@ -30,7 +31,7 @@ class Generator(BaseModel):
         self,
         cpu_utilization: float,
         min_period: int = 1,
-        max_period: int = 60,
+        max_period: int = 600,
         min_task_num: int = 2,
         max_task_num: int = 10,
     ):
@@ -47,7 +48,7 @@ class Generator(BaseModel):
         if os.path.exists(DirNames.SIM_CONFIG.value):
             shutil.rmtree(DirNames.SIM_CONFIG.value)
         else:
-            print(f"Dataset not found at {DirNames.SIM_CONFIG.value}")
+            raise FileNotFoundError(f"Dataset not found at {DirNames.SIM_CONFIG.value}")
 
     def generate_task_set(self) -> List[Task]:
         # Randomly select the number of tasks

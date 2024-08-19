@@ -48,7 +48,7 @@ class EDF(Scheduler):
             energy_required = job.energy_requirement / job.wcet * job.time_remaining
             if energy_required <= self.energy:
                 return job
-            
+
         # if no task can be executed, check if there is enough energy to harvest
         if self.current_harvestable_energy[0] > 0:
             return Harvest()

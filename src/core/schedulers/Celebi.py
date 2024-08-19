@@ -72,6 +72,7 @@ class Celebi(Scheduler):
             # if job is already scheduled, skip
             if job in self.scheduled_jobs_map.values():
                 continue
+
             latest_start_tick = job.deadline - job.wcet
             start_tick = self.find_non_overlapping_start_tick(
                 latest_start_tick, job.wcet, current_tick
@@ -91,15 +92,15 @@ class Celebi(Scheduler):
                 self.scheduled_jobs_map.pop(current_tick)
                 return job
         else:
-            # check if there is enough energy execute early a task
+            # if there is enough energy execute early a task
             for job in self.ready_list:
                 energy_required = job.energy_requirement / job.wcet * job.time_remaining
                 if energy_required <= self.energy:
                     # TODO remove job from map
                     return job
 
-            # if no task can be executed, check if there is enough energy to harvest
-            if self.current_harvestable_energy[0] > 0:
-                return Harvest()
+        # if no task can be executed, check if there is enough energy to harvest
+        if self.current_harvestable_energy[0] > 0:
+            return Harvest()
 
         return NOP()
