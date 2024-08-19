@@ -1,14 +1,14 @@
 import os
 import shutil
-from typing import List
+from typing import List, Optional
 
-from src.core.schedulers.EDFPrediction import EDFPrediction
 from src.config.Config import DirNames, FileNames
 from src.core.Capacitor import Capacitor
 from src.core.Configuration import Configuration
 from src.core.schedulers.ALAP import ALAP
 from src.core.schedulers.Celebi import Celebi
 from src.core.schedulers.EDF import EDF
+from src.core.schedulers.EDFPrediction import EDFPrediction
 from src.core.schedulers.RM import RM
 from src.core.schedulers.Scheduler import Scheduler
 from src.core.Simulation import Simulation
@@ -16,7 +16,7 @@ from src.logger.Logger import Logger
 from src.plotter.Plot import Plot
 
 
-def plot_results(sim: Simulation, input_path: str, output_path: str) -> None:
+def plot_results(sim: Simulation, input_path: str, output_path: Optional[str]) -> None:
     plot = Plot(sim.task_list)
     # plot task set
     plot.plot_task_set(sim.num_ticks, output_path=output_path)
@@ -28,7 +28,7 @@ def plot_results(sim: Simulation, input_path: str, output_path: str) -> None:
     plot.plot_energy_level(input_path=input_path, output_path=output_path)
 
 
-def run_sim(input_path: str) -> None:
+def run_sim(input_path: str, save: bool) -> None:
     scheduler_list: List[Scheduler] = [ALAP(), Celebi(), EDF(), EDFPrediction(), RM()]
 
     # for every task_set file in the task_sets directory
@@ -56,7 +56,7 @@ def run_sim(input_path: str) -> None:
             )
 
             if isinstance(scheduler, EDFPrediction):
-                config.prediction_len = 5
+                config.prediction_len = 10
             config.set_capacitor(Capacitor(energy=100, max_energy=100))
             config.set_scheduler(scheduler)
             config.set_energy_trace(
@@ -79,39 +79,40 @@ def run_sim(input_path: str) -> None:
             sim = Simulation(config)
             sim.run()
 
-            plot_results(sim, input_path=res_path, output_path=res_path)
+            if save:
+                plot_results(sim, input_path=res_path, output_path=res_path)
 
 
-def run_cpu_utilization() -> None:
+def run_cpu_utilization(save: bool) -> None:
     for dir in os.listdir(os.path.join(DirNames.SIM_CONFIG.value, "cpu_utilization")):
         print(f"  Running simulation for CPU utilization {dir}")
-        path = os.path.join(DirNames.SIM_CONFIG.value, "cpu_utilization", dir)
-        run_sim(path)
+        input_path = os.path.join(DirNames.SIM_CONFIG.value, "cpu_utilization", dir)
+        run_sim(input_path, save)
 
 
-def run_task_num() -> None:
+def run_task_num(save: bool) -> None:
     for dir in os.listdir(os.path.join(DirNames.SIM_CONFIG.value, "task_num")):
         print(f"  Running simulation for task number {dir}")
-        path = os.path.join(DirNames.SIM_CONFIG.value, "task_num", dir)
-        run_sim(path)
+        input_path = os.path.join(DirNames.SIM_CONFIG.value, "task_num", dir)
+        run_sim(input_path, save)
 
 
-def run_period_variation() -> None:
+def run_period_variation(save: bool) -> None:
     for dir in os.listdir(os.path.join(DirNames.SIM_CONFIG.value, "period_variation")):
         print(f"  Running simulation for period variation {dir}")
-        path = os.path.join(DirNames.SIM_CONFIG.value, "period_variation", dir)
-        run_sim(path)
+        input_path = os.path.join(DirNames.SIM_CONFIG.value, "period_variation", dir)
+        run_sim(input_path, save)
 
 
-def run_dataset() -> None:
+def run_dataset(save: bool = False) -> None:
     if os.path.exists(DirNames.RESULTS.value):
         shutil.rmtree(DirNames.RESULTS.value)
 
     print("Starting simulation...")
 
-    run_cpu_utilization()
-    run_task_num()
-    run_period_variation()
+    run_cpu_utilization(save)
+    run_task_num(save)
+    run_period_variation(save)
 
     print("Simulation completed")
 

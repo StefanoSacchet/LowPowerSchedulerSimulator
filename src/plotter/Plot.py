@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 from pydantic import BaseModel
 
-from src.config.Config import DirNames, FileNames
+from src.config.Config import FileNames
 from src.core.tasks.Task import Task
 
 

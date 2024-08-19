@@ -5,7 +5,6 @@ from pydantic import BaseModel, field_validator
 
 from src.config.Config import ConfigParams, DirNames, FileNames
 from src.core.Capacitor import Capacitor
-from src.core.EnergyTrace import EnergyTrace
 from src.core.schedulers.Celebi import Celebi
 from src.core.schedulers.Scheduler import Scheduler
 from src.core.tasks.Task import Task

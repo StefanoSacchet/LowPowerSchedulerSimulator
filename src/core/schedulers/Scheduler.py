@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Optional
+from typing import List
 
 from pydantic import BaseModel, field_validator
 
@@ -15,7 +15,6 @@ class Scheduler(ABC, BaseModel):
 
     ready_list: List[Job] = []  # list of jobs that are ready to be scheduled
     energy: float = 0  # energy available to the scheduler
-    prediction: List[int] = []  # list to store next n energy values
 
     class Config:
         validate_assignment = True

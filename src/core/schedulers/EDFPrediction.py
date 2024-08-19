@@ -1,4 +1,7 @@
-from typing import List
+import heapq
+from typing import List, Tuple
+
+from pydantic import BaseModel
 
 from src.core.schedulers.Scheduler import Scheduler
 from src.core.tasks.AbstractJob import AbstractJob
@@ -7,50 +10,56 @@ from src.core.tasks.Job import Job
 from src.core.tasks.NOP import NOP
 
 
-class EDFPrediction(Scheduler):
-    """
-    Earliest Deadline First scheduler
+class EDFPrediction(Scheduler, BaseModel):
+    name: str = "EDFPrediction"
 
-    Attributes:
-        ready_list: List[Job] - list of jobs that are ready to be scheduled
-        energy: int - energy of the capacitor
-        prediction: List[int] - list to store next n energy values
-    """
+    ready_list: List[Tuple[int, int, Job]] = []
+    energy: float = 0.0
+    future_energy: List[int] = []
 
-    name: str = "EDF_prediction"
-
-    current_harvestable_energy: List[int] = []
-
-    def init(self, energy: float, prediction: List[int]) -> None:
+    def init(self, energy: float, future_energy: List[int]) -> None:
         self.ready_list = []
         self.energy = energy
-        self.current_harvestable_energy = prediction
+        self.future_energy = future_energy
 
     def on_activate(self, job: Job) -> None:
-        self.ready_list.append(job)
+        heapq.heappush(self.ready_list, (job.deadline, job.id, job))
 
     def on_terminate(self, job: Job) -> None:
-        self.ready_list.remove(job)
+        # Filter out the job from the ready_list by creating a new list
+        self.ready_list = [(dl, id, j) for dl, id, j in self.ready_list if j != job]
+        heapq.heapify(self.ready_list)
 
-    def on_energy_update(self, energy: int, prediction: List[int]) -> None:
+    def on_energy_update(self, energy: int, future_energy: List[int]) -> None:
         self.energy = energy
-        self.current_harvestable_energy = prediction
+        self.future_energy = future_energy
 
     def schedule(self, current_tick: int) -> AbstractJob:
-        # TODO heap q
-
-        if len(self.ready_list) == 0:
+        if not self.ready_list:
+            if self.future_energy and self.future_energy[0] > 0:
+                return Harvest()
             return NOP()
 
-        self.ready_list.sort(key=lambda x: x.deadline)
+        # Track jobs that can't be scheduled right now
+        deferred_jobs: List[Tuple[int, int, Job]] = []
 
-        for job in self.ready_list:
+        while self.ready_list:
+            _, _, job = heapq.heappop(self.ready_list)
+
+            # Calculate the required energy for this job
             energy_required = job.energy_requirement / job.wcet * job.time_remaining
-            if energy_required <= self.energy + sum(self.prediction):
-                return job
 
-        # if no task can be executed, check if there is enough energy to harvest
-        if self.current_harvestable_energy[0] > 0:
+            if energy_required <= self.energy:
+                return job
+            else:
+                deferred_jobs.append((job.deadline, job.id, job))
+
+        # Re-push all deferred jobs back to the heapq
+        for job in deferred_jobs:
+            heapq.heappush(self.ready_list, job)
+
+        # No job can be scheduled, check if we can harvest energy
+        if self.future_energy[0] > 0:
             return Harvest()
 
         return NOP()
