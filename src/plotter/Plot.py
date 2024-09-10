@@ -1,5 +1,6 @@
 import os
 from itertools import cycle
+from tkinter import font
 from typing import Dict, List, Optional
 
 import matplotlib.patches as mpatches
@@ -113,10 +114,11 @@ class Plot(BaseModel):
                 )
 
         # Configure plot
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Task Identifier")
+        ax.set_xlabel("Time", fontsize=22)  # Increased font size for x-axis label
+        ax.set_ylabel("Task Identifier", fontsize=22)  # Increased font size for y-axis label
         ax.set_yticks([task_id_map[task] for task in tasks])
-        ax.set_yticklabels(tasks)
+        ax.set_yticklabels(tasks, fontsize=20)  # Increased font size for y-tick labels
+        ax.tick_params(axis='x', labelsize=20)  # Increased font size for x-tick labels
         ax.grid(True)
 
         # Create legend for tasks
@@ -130,10 +132,10 @@ class Plot(BaseModel):
         patches.append(
             mpatches.Patch(color="red", linestyle="dashed", label="Deadline")
         )
-        plt.legend(handles=patches)
+        plt.legend(handles=patches, title="Tasks", fontsize=18)
 
         # Set title
-        plt.title("Simulation Results")
+        plt.title("Simulation Results", fontsize=22)
 
         self.save_plot(plt, output_path, FileNames.PLOT_RESULTS.value)
 
@@ -166,10 +168,11 @@ class Plot(BaseModel):
                 )
 
         # Configure plot
-        ax.set_xlabel("Time")
-        ax.set_ylabel("Task Identifier")
+        ax.set_xlabel("Time", fontsize=22)
+        ax.set_ylabel("Task Identifier", fontsize=22)
         ax.set_yticks([task.id for task in self.task_list])
-        ax.set_yticklabels([task.name for task in self.task_list])
+        ax.set_yticklabels([task.name for task in self.task_list], fontsize=20)
+        ax.tick_params(axis='x', labelsize=20)
         ax.grid(True)
 
         # Create legend for task execution
@@ -183,10 +186,10 @@ class Plot(BaseModel):
         patches.append(
             mpatches.Patch(color="red", linestyle="dashed", label="Deadline")
         )
-        plt.legend(handles=patches, title="Tasks")
+        plt.legend(handles=patches, title="Tasks", fontsize=18)
 
         # Set title
-        plt.title("Task Set Gantt Chart")
+        plt.title("Task Set Gantt Chart", fontsize=22)
 
         self.save_plot(plt, output_path, FileNames.PLOT_TASK_SET.value)
 
@@ -213,11 +216,13 @@ class Plot(BaseModel):
         )
 
         # Add labels and title
-        plt.xlabel("Tick")
-        plt.ylabel("Energy Level")
-        plt.title("Energy Level Over Time")
+        plt.xlabel("Tick", fontsize=22)
+        plt.ylabel("Energy Level", fontsize=22)
+        plt.title("Energy Level Over Time", fontsize=22)
         plt.grid(True)
-        plt.legend()
+        # Adjust tick label sizes
+        plt.tick_params(axis='both', which='major', labelsize=16)
+        plt.legend(fontsize=20)
 
         self.save_plot(plt, output_path, FileNames.PLOT_ENERGY_LEVEL.value)
 

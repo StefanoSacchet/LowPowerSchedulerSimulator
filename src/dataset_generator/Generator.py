@@ -10,11 +10,10 @@ from src.core.tasks.Task import Task
 
 # Define the energy consumption levels
 ENERGY_CONSUMPTION_LEVELS = {
-    "level_1": 6,  # Low energy consumption rate (e.g., low power mode)
-    "level_2": 8,  # Medium energy consumption rate (e.g., active mode)
-    "level_3": 10,  # High energy consumption rate (e.g., with sensors)
+    "level_1": 14,  # Low energy consumption rate
+    "level_2": 18,  # Medium energy consumption rate
+    "level_3": 22,  # High energy consumption rate
 }
-
 
 class Generator(BaseModel):
     cpu_utilization: float

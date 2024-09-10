@@ -29,7 +29,7 @@ def plot_results(sim: Simulation, input_path: str, output_path: Optional[str]) -
 
 
 def run_sim(input_path: str, save: bool) -> None:
-    scheduler_list: List[Scheduler] = [ALAP(), Celebi(), EDF(), EDFPrediction(), RM()]
+    scheduler_list: List[Scheduler] = [ALAP(), Celebi(), EDF(), RM()]
 
     # for every task_set file in the task_sets directory
     for task_set_filename in os.listdir(

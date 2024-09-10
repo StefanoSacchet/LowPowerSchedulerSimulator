@@ -39,7 +39,7 @@ def sim_eval() -> None:
     output_path: str = ""
 
     for sim_type in os.listdir(DirNames.RESULTS.value):
-        if sim_type.endswith(".csv"):
+        if sim_type.endswith(".csv") or sim_type == ".DS_Store":
             continue
 
         for type_config in os.listdir(os.path.join(DirNames.RESULTS.value, sim_type)):

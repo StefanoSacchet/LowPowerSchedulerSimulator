@@ -15,7 +15,15 @@ def generate_cpu_utilization(num_task_set: int) -> None:
 def generate_task_num(num_task_set: int) -> None:
     print("  Generating task number")
     for i in range(2, 10, 2):
-        generator = Generator(cpu_utilization=0.5, min_task_num=i, max_task_num=i)
+        if i == 2:
+            cpu_utilization = 0.5
+        elif i == 4:
+            cpu_utilization = 0.6
+        elif i == 6:
+            cpu_utilization = 0.7
+        elif i == 8:
+            cpu_utilization = 0.8
+        generator = Generator(cpu_utilization=cpu_utilization, min_task_num=i, max_task_num=i)
         generator.generate_dataset(num_task_sets=num_task_set)
         path = DirNames.SIM_CONFIG.value + f"task_num/{i}/"
         generator.save_dataset(path)
